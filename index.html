@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="S$S — PWA de estudos e simulado de Análise Econômica para Gestão Financeira.">
+  <meta name="theme-color" content="#050816" id="themeColorMeta">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="S$S">
+  <title>S$S | Análise Econômica</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icons/icon-192x192.png">
+  <link rel="apple-touch-icon" href="assets/icons/icon-180x180.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="cyber-grid" aria-hidden="true"></div>
+  <header class="app-header glass-panel">
+    <div class="container app-header__inner">
+      <a class="brand" href="#top" aria-label="S$S início">
+        <img src="assets/img/logo.png" alt="Logo do aplicativo S$S">
+        <span><strong>S$S</strong><small>Análise Econômica</small></span>
+      </a>
+      <nav class="header-actions" aria-label="Ações do aplicativo">
+        <button id="theme-toggle" class="control-button" type="button" aria-label="Alternar entre modo neon e modo dia">☀ Modo dia</button>
+        <button id="install-button" class="install-button" type="button">Instalar S$S</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero__content container">
+        <div class="hero-copy">
+          <img class="hero-logo-small" src="assets/img/logo.png" alt="Gatinho, símbolo do S$S">
+          <span class="eyebrow">PWA · Gestão Financeira</span>
+          <h1>Estude Análise Econômica em uma experiência <span>neon</span>.</h1>
+          <p>Simulado com 40 questões, correção final, gabarito e explicações para cada erro. Funciona como aplicativo instalável e mantém a interface disponível offline após o primeiro acesso.</p>
+          <div class="device-status hero-status"><span></span> PWA pronta</div>
+          <div class="hero-actions">
+            <a class="primary-button" href="#simulado">Iniciar simulado</a>
+            <button id="hero-install-button" class="secondary-button install-trigger" type="button">Instalar aplicativo</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="study-access container" aria-label="Modo de estudo">
+      <button id="open-flashcards" class="study-card glass-panel" type="button">
+        <span class="study-card__icon" aria-hidden="true">◫</span>
+        <span class="study-card__content">
+          <small>Material de estudo</small>
+          <strong>Estudar com flashcards</strong>
+          <span>Perguntas exclusivas, diferentes das 40 questões do simulado.</span>
+        </span>
+        <span class="study-card__arrow" aria-hidden="true">→</span>
+      </button>
+    </section>
+
+    <section id="simulado" class="quiz-section">
+      <div class="container">
+        <div class="section-heading section-heading--quiz">
+          <div><span class="section-kicker">Avaliação</span><h2>Simulado — 40 questões</h2></div>
+          <p>Responda todas as questões. A correção e o gabarito serão liberados somente ao final.</p>
+        </div>
+        <div class="quiz-toolbar glass-panel" aria-live="polite">
+          <div class="quiz-toolbar__top">
+            <div class="progress-info"><strong id="answered-count">0 de 40 respondidas</strong><span>É necessário concluir todas para corrigir.</span></div>
+            <button id="quiz-audio-toggle" class="audio-mode-button" type="button" aria-pressed="false">🔊 Ativar modo áudio</button>
+          </div>
+          <div class="progress-track" aria-hidden="true"><span id="progress-bar"></span></div>
+          <div id="audio-status" class="audio-status" hidden>
+            <span id="audio-status-text">Modo áudio desligado</span>
+            <strong id="audio-countdown"></strong>
+          </div>
+        </div>
+        <form id="quiz-form" novalidate>
+          <div id="quiz-container" class="quiz-list"></div>
+          <div class="quiz-actions">
+            <button id="submit-quiz" class="primary-button" type="submit">Corrigir simulado</button>
+            <button id="reset-quiz" class="secondary-button is-hidden" type="button">Refazer simulado</button>
+          </div>
+        </form>
+        <section id="result-panel" class="result-panel glass-panel is-hidden" aria-live="polite" tabindex="-1">
+          <div class="result-summary">
+            <div><span class="section-kicker">Resultado final</span><h2 id="result-title">Seu desempenho</h2><p id="result-message"></p></div>
+            <div class="score-circle" aria-label="Pontuação"><strong id="score-percent">0%</strong><span id="score-fraction">0/40</span></div>
+          </div>
+          <div class="answer-key"><h3>Gabarito</h3><div id="answer-key-grid" class="answer-key__grid"></div></div>
+          <div id="wrong-answers-section"><h3>Explicações das respostas incorretas</h3><div id="wrong-answers" class="wrong-answers"></div></div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer><div class="container"><img src="assets/icons/icon-72x72.png" alt=""> S$S · Gestão Financeira · Análise Econômica</div></footer>
+
+  <div id="toast" class="toast" role="status" aria-live="assertive" aria-hidden="true">
+    <span class="toast__heart" aria-hidden="true">♥</span>
+    <div><strong>Sales está orgulhoso de você!</strong><span>Excelente desempenho no simulado.</span></div>
+    <button id="toast-close" type="button" aria-label="Fechar mensagem">×</button>
+  </div>
+  <div id="app-toast" class="app-toast" role="status" aria-live="polite"></div>
+  <div id="flashcards-modal" class="flashcards-modal" hidden>
+    <div class="flashcards-shell glass-panel" role="dialog" aria-modal="true" aria-labelledby="flashcards-title">
+      <header class="flashcards-header">
+        <div>
+          <span class="section-kicker">Modo de estudo</span>
+          <h2 id="flashcards-title">Flashcards de Análise Econômica</h2>
+        </div>
+        <button id="close-flashcards" class="flashcards-close" type="button" aria-label="Fechar flashcards">×</button>
+      </header>
+
+      <div class="flashcards-toolbar">
+        <label for="flashcard-aula">Conteúdo</label>
+        <select id="flashcard-aula">
+          <option value="all">Todas as aulas</option>
+          <option value="1">História Econômica Brasileira</option>
+          <option value="2">Conceitos Microeconômicos</option>
+          <option value="3">Estruturas de Mercado</option>
+          <option value="4">Economia Industrial e Competitiva</option>
+          <option value="5">Política Econômica</option>
+          <option value="6">Conceitos Macroeconômicos</option>
+        </select>
+        <button id="shuffle-flashcards" class="secondary-button" type="button">Embaralhar</button>
+        <button id="flashcard-audio-toggle" class="audio-mode-button" type="button" aria-pressed="false">🔊 Áudio automático</button>
+      </div>
+
+      <div class="flashcard-progress">
+        <strong id="flashcard-counter">1 de 120</strong>
+        <span id="flashcard-aula-label">História Econômica Brasileira</span>
+      </div>
+
+      <button id="flashcard" class="flashcard" type="button" aria-label="Virar flashcard">
+        <span class="flashcard__inner">
+          <span class="flashcard__face flashcard__front">
+            <small>Pergunta</small>
+            <strong id="flashcard-question"></strong>
+            <em>Clique no card para ver a resposta</em>
+          </span>
+          <span class="flashcard__face flashcard__back">
+            <small>Resposta</small>
+            <strong id="flashcard-answer"></strong>
+            <em>Clique novamente para voltar</em>
+          </span>
+        </span>
+      </button>
+
+      <div class="flashcards-controls">
+        <button id="previous-flashcard" class="secondary-button" type="button">← Anterior</button>
+        <button id="flip-flashcard" class="primary-button" type="button">Ver resposta</button>
+        <button id="next-flashcard" class="secondary-button" type="button">Próximo →</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
