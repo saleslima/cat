@@ -1105,10 +1105,15 @@ let recognitionExpected = false;
 let responseTimer = null;
 let countdownTimer = null;
 let recognitionRestartTimer = null;
+let recognitionStartTimer = null;
 let audioSessionId = 0;
-let microphoneAuthorized = localStorage.getItem('sss-microphone-authorized') === 'true';
-let microphoneDenied = localStorage.getItem('sss-microphone-denied') === 'true';
+let microphoneAuthorized = false;
+let microphoneDenied = false;
 let permissionRequestInProgress = false;
+
+// Uma recusa não pode ficar gravada para sempre: no Android o usuário pode
+// liberar o microfone depois, nas configurações do PWA.
+localStorage.removeItem('sss-microphone-denied');
 
 function mostrarAviso(message) {
   notifyApp(message);
@@ -1123,7 +1128,10 @@ function ativarModoRespostaPorBotoes(message = 'Resposta por voz indisponível. 
     audioStatus.hidden = false;
     audioStatusText.textContent = message;
   }
-  if (enableMicrophoneButton) enableMicrophoneButton.hidden = true;
+  if (enableMicrophoneButton) {
+    enableMicrophoneButton.hidden = !(SpeechRecognitionAPI && navigator.mediaDevices?.getUserMedia && window.isSecureContext);
+    enableMicrophoneButton.textContent = '🎙 Tentar permitir microfone';
+  }
 }
 
 function setAudioStatus(message, seconds = null) {
@@ -1182,7 +1190,6 @@ async function solicitarPermissaoMicrofone() {
     microphoneAuthorized = true;
     microphoneDenied = false;
     localStorage.setItem('sss-microphone-authorized', 'true');
-    localStorage.removeItem('sss-microphone-denied');
     hideMicrophoneButton();
     document.body.classList.remove('voice-fallback-buttons');
     buttonAnswerFallbackEnabled = false;
@@ -1192,11 +1199,12 @@ async function solicitarPermissaoMicrofone() {
     return true;
   } catch (error) {
     microphoneAuthorized = false;
-    microphoneDenied = true;
+    microphoneDenied = error?.name === 'NotAllowedError' || error?.name === 'SecurityError';
     localStorage.removeItem('sss-microphone-authorized');
-    localStorage.setItem('sss-microphone-denied', 'true');
-    ativarModoRespostaPorBotoes('Permissão do microfone negada. Responda tocando em A, B, C ou D.');
-    mostrarAviso('Libere o microfone nas permissões do site para responder por voz.');
+    showMicrophoneButton('O microfone está bloqueado. Libere-o nas permissões do aplicativo e toque em “Tentar permitir microfone”.');
+    buttonAnswerFallbackEnabled = true;
+    document.body.classList.add('voice-fallback-buttons');
+    mostrarAviso('Libere o microfone nas permissões do aplicativo para responder por voz.');
     return false;
   } finally {
     permissionRequestInProgress = false;
@@ -1232,13 +1240,18 @@ function speakText(text, onEnd) {
   };
   utterance.onend = finish;
   utterance.onerror = finish;
+  // O sintetizador pode permanecer pausado quando um PWA Android volta do
+  // segundo plano ou acaba de trocar o foco entre alto-falante e microfone.
+  window.speechSynthesis.resume();
   window.speechSynthesis.speak(utterance);
 }
 
 function stopRecognition() {
   recognitionExpected = false;
   clearTimeout(recognitionRestartTimer);
+  clearTimeout(recognitionStartTimer);
   recognitionRestartTimer = null;
+  recognitionStartTimer = null;
   if (recognition) {
     recognition.onstart = null;
     recognition.onresult = null;
@@ -1296,9 +1309,15 @@ async function listenForQuizChoice(sessionId) {
   }
 
   const permission = await queryMicrophonePermission();
-  if (permission === 'denied' || microphoneDenied) {
-    ativarModoRespostaPorBotoes('Microfone bloqueado. Libere a permissão ou responda tocando em A, B, C ou D.');
+  if (permission === 'denied') {
+    microphoneAuthorized = false;
+    microphoneDenied = true;
+    showMicrophoneButton('Microfone bloqueado. Libere-o nas permissões do aplicativo e tente novamente.');
     return;
+  }
+  if (permission === 'granted') {
+    microphoneAuthorized = true;
+    microphoneDenied = false;
   }
   if (!microphoneAuthorized && permission !== 'granted') {
     showMicrophoneButton();
@@ -1319,6 +1338,8 @@ async function listenForQuizChoice(sessionId) {
 
   recognition.onstart = () => {
     if (!quizAudioEnabled || sessionId !== audioSessionId) return;
+    clearTimeout(recognitionStartTimer);
+    recognitionStartTimer = null;
     startTenSecondCountdown(sessionId);
   };
 
@@ -1347,8 +1368,9 @@ async function listenForQuizChoice(sessionId) {
       microphoneAuthorized = false;
       microphoneDenied = true;
       localStorage.removeItem('sss-microphone-authorized');
-      localStorage.setItem('sss-microphone-denied', 'true');
-      ativarModoRespostaPorBotoes('Microfone bloqueado. Responda tocando em A, B, C ou D.');
+      showMicrophoneButton('Microfone bloqueado. Libere-o nas permissões do aplicativo e toque para tentar novamente.');
+      buttonAnswerFallbackEnabled = true;
+      document.body.classList.add('voice-fallback-buttons');
       speakText('O acesso ao microfone foi bloqueado. Responda tocando em uma alternativa.');
       return;
     }
@@ -1380,6 +1402,13 @@ async function listenForQuizChoice(sessionId) {
 
   try {
     recognition.start();
+    // Alguns WebViews/PWAs Android não disparam onstart nem onerror. Nesse
+    // caso, encerra a sessão presa e oferece uma nova tentativa explícita.
+    recognitionStartTimer = setTimeout(() => {
+      if (!recognitionExpected || !quizAudioEnabled || sessionId !== audioSessionId) return;
+      stopRecognition();
+      showMicrophoneButton('O microfone não iniciou. Toque para tentar novamente.');
+    }, 5000);
   } catch (error) {
     stopRecognition();
     // InvalidStateError é comum no Android quando uma sessão anterior ainda
@@ -1450,17 +1479,24 @@ async function startQuizAudio() {
 
   // O clique neste botão é uma ação direta do usuário e, portanto, é o
   // momento correto para solicitar a permissão oficial do microfone.
-  if (SpeechRecognitionAPI && !microphoneAuthorized && !microphoneDenied) {
+  if (SpeechRecognitionAPI) {
     const permission = await queryMicrophonePermission();
-    if (permission === 'granted') microphoneAuthorized = true;
-    else if (permission === 'denied') microphoneDenied = true;
-    else await solicitarPermissaoMicrofone();
+    if (permission === 'granted') {
+      microphoneAuthorized = true;
+      microphoneDenied = false;
+    } else {
+      // Executado ainda a partir do toque do usuário, condição obrigatória
+      // para o Android exibir a solicitação de permissão.
+      await solicitarPermissaoMicrofone();
+    }
   }
 
   if (!SpeechRecognitionAPI) {
     ativarModoRespostaPorBotoes('Este celular não suporta resposta por voz. Use os botões A, B, C ou D.');
   } else if (microphoneDenied) {
-    ativarModoRespostaPorBotoes('Microfone bloqueado. Libere nas configurações do site ou use os botões A, B, C ou D.');
+    showMicrophoneButton('Microfone bloqueado. Libere nas configurações do aplicativo e tente novamente.');
+    buttonAnswerFallbackEnabled = true;
+    document.body.classList.add('voice-fallback-buttons');
   }
 
   flashcardAudioEnabled = false;
@@ -1570,10 +1606,11 @@ window.addEventListener('pagehide', stopSpeechAndRecognition);
     microphoneAuthorized = true;
     microphoneDenied = false;
     localStorage.setItem('sss-microphone-authorized', 'true');
-    localStorage.removeItem('sss-microphone-denied');
   } else if (permission === 'denied') {
     microphoneAuthorized = false;
     microphoneDenied = true;
-    ativarModoRespostaPorBotoes('Microfone bloqueado. Libere nas configurações do site ou use os botões A, B, C ou D.');
+    showMicrophoneButton('Microfone bloqueado. Libere nas configurações do aplicativo e toque para tentar novamente.');
+    buttonAnswerFallbackEnabled = true;
+    document.body.classList.add('voice-fallback-buttons');
   }
 })();
