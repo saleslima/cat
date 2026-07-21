@@ -35,9 +35,10 @@
       <div class="hero__content container">
         <div class="hero-copy">
           <img class="hero-logo-small" src="assets/img/logo.png" alt="Gatinho, símbolo do S$S">
-          <span class="eyebrow">Gestão Financeira</span>
-     
-          <div class="device-status hero-status"><span></span> ON </div>
+          <span class="eyebrow">PWA · Gestão Financeira</span>
+          <h1>Estude Análise Econômica em uma experiência <span>neon</span>.</h1>
+          <p>Simulado com 40 questões, correção final, gabarito e explicações para cada erro. Funciona como aplicativo instalável e mantém a interface disponível offline após o primeiro acesso.</p>
+          <div class="device-status hero-status"><span></span> PWA pronta</div>
           <div class="hero-actions">
             <a class="primary-button" href="#simulado">Iniciar simulado</a>
             <button id="hero-install-button" class="secondary-button install-trigger" type="button">Instalar aplicativo</button>
@@ -72,7 +73,10 @@
           <div class="progress-track" aria-hidden="true"><span id="progress-bar"></span></div>
           <div id="audio-status" class="audio-status" hidden>
             <span id="audio-status-text">Modo áudio desligado</span>
-            <strong id="audio-countdown"></strong>
+            <div class="audio-status__actions">
+              <strong id="audio-countdown"></strong>
+              <button id="enable-microphone" class="microphone-button" type="button" hidden>🎙 Permitir microfone</button>
+            </div>
           </div>
         </div>
         <form id="quiz-form" novalidate>

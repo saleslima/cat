@@ -1086,36 +1086,17 @@ document.addEventListener('keydown', event => {
 
 
 // ===== MODO ÁUDIO: leitura automática e respostas por voz =====
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-let buttonAnswerFallbackEnabled = false;
-
-function ativarModoRespostaPorBotoes() {
-  buttonAnswerFallbackEnabled = true;
-  document.body.classList.add('voice-fallback-buttons');
-  quizForm?.setAttribute('data-answer-mode', 'buttons');
-  if (audioStatusText) {
-    audioStatus.hidden = false;
-    audioStatusText.textContent = 'Resposta por voz indisponível. Use os botões A, B, C ou D.';
-  }
-}
-
-function mostrarAviso(message) {
-  notifyApp(message);
-  console.info(message);
-}
-
-if (!SpeechRecognition) {
-  ativarModoRespostaPorBotoes();
-  mostrarAviso(
-    'Seu navegador não oferece reconhecimento por voz. ' +
-    'Responda usando os botões A, B, C ou D.'
-  );
-}
+// Compatibilidade: Chrome/Edge desktop e Android. Em navegadores sem
+// SpeechRecognition (principalmente iOS/Safari), o PWA usa botões A–D.
 const quizAudioToggle = document.getElementById('quiz-audio-toggle');
 const flashcardAudioToggle = document.getElementById('flashcard-audio-toggle');
 const audioStatus = document.getElementById('audio-status');
 const audioStatusText = document.getElementById('audio-status-text');
 const audioCountdown = document.getElementById('audio-countdown');
+const enableMicrophoneButton = document.getElementById('enable-microphone');
+const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+
+let buttonAnswerFallbackEnabled = false;
 let quizAudioEnabled = false;
 let flashcardAudioEnabled = false;
 let audioQuestionIndex = 0;
@@ -1123,7 +1104,104 @@ let recognition = null;
 let recognitionExpected = false;
 let responseTimer = null;
 let countdownTimer = null;
+let recognitionRestartTimer = null;
 let audioSessionId = 0;
+let microphoneAuthorized = localStorage.getItem('sss-microphone-authorized') === 'true';
+let microphoneDenied = localStorage.getItem('sss-microphone-denied') === 'true';
+let permissionRequestInProgress = false;
+
+function mostrarAviso(message) {
+  notifyApp(message);
+  console.info(message);
+}
+
+function ativarModoRespostaPorBotoes(message = 'Resposta por voz indisponível. Use os botões A, B, C ou D.') {
+  buttonAnswerFallbackEnabled = true;
+  document.body.classList.add('voice-fallback-buttons');
+  quizForm?.setAttribute('data-answer-mode', 'buttons');
+  if (audioStatus && audioStatusText) {
+    audioStatus.hidden = false;
+    audioStatusText.textContent = message;
+  }
+  if (enableMicrophoneButton) enableMicrophoneButton.hidden = true;
+}
+
+function setAudioStatus(message, seconds = null) {
+  if (!audioStatus) return;
+  audioStatus.hidden = false;
+  if (audioStatusText) audioStatusText.textContent = message;
+  if (audioCountdown) audioCountdown.textContent = seconds === null ? '' : `${seconds}s`;
+}
+
+function showMicrophoneButton(message = 'Toque em “Permitir microfone” para responder por voz.') {
+  setAudioStatus(message);
+  if (enableMicrophoneButton) enableMicrophoneButton.hidden = false;
+}
+
+function hideMicrophoneButton() {
+  if (enableMicrophoneButton) enableMicrophoneButton.hidden = true;
+}
+
+async function queryMicrophonePermission() {
+  if (!navigator.permissions?.query) return 'unknown';
+  try {
+    const result = await navigator.permissions.query({ name: 'microphone' });
+    return result.state;
+  } catch (_) {
+    return 'unknown';
+  }
+}
+
+async function solicitarPermissaoMicrofone() {
+  if (!SpeechRecognitionAPI) {
+    ativarModoRespostaPorBotoes('Este celular não oferece reconhecimento de voz. Responda tocando em A, B, C ou D.');
+    mostrarAviso('Reconhecimento por voz indisponível neste navegador.');
+    return false;
+  }
+  if (!navigator.mediaDevices?.getUserMedia) {
+    ativarModoRespostaPorBotoes('Não foi possível solicitar o microfone. Responda tocando em A, B, C ou D.');
+    return false;
+  }
+  if (!window.isSecureContext) {
+    ativarModoRespostaPorBotoes('O microfone exige HTTPS. Responda tocando em A, B, C ou D.');
+    mostrarAviso('Publique o PWA em HTTPS para usar o microfone.');
+    return false;
+  }
+  if (permissionRequestInProgress) return false;
+  permissionRequestInProgress = true;
+  setAudioStatus('Solicitando permissão do microfone...');
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true
+      }
+    });
+    stream.getTracks().forEach(track => track.stop());
+    microphoneAuthorized = true;
+    microphoneDenied = false;
+    localStorage.setItem('sss-microphone-authorized', 'true');
+    localStorage.removeItem('sss-microphone-denied');
+    hideMicrophoneButton();
+    document.body.classList.remove('voice-fallback-buttons');
+    buttonAnswerFallbackEnabled = false;
+    quizForm?.setAttribute('data-answer-mode', 'voice');
+    setAudioStatus('Microfone autorizado. Preparando modo áudio...');
+    mostrarAviso('Microfone ativado com sucesso.');
+    return true;
+  } catch (error) {
+    microphoneAuthorized = false;
+    microphoneDenied = true;
+    localStorage.removeItem('sss-microphone-authorized');
+    localStorage.setItem('sss-microphone-denied', 'true');
+    ativarModoRespostaPorBotoes('Permissão do microfone negada. Responda tocando em A, B, C ou D.');
+    mostrarAviso('Libere o microfone nas permissões do site para responder por voz.');
+    return false;
+  } finally {
+    permissionRequestInProgress = false;
+  }
+}
 
 function getPortugueseVoice() {
   const voices = window.speechSynthesis?.getVoices?.() || [];
@@ -1139,18 +1217,32 @@ function speakText(text, onEnd) {
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'pt-BR';
-  utterance.rate = 0.92;
+  utterance.rate = 0.9;
   utterance.pitch = 1;
+  utterance.volume = 1;
   const voice = getPortugueseVoice();
   if (voice) utterance.voice = voice;
-  utterance.onend = () => onEnd?.();
-  utterance.onerror = () => onEnd?.();
+  let finished = false;
+  const finish = () => {
+    if (finished) return;
+    finished = true;
+    // Em celulares, o sistema precisa de uma pequena pausa para liberar o
+    // foco de áudio da síntese antes de abrir o microfone.
+    window.setTimeout(() => onEnd?.(), 650);
+  };
+  utterance.onend = finish;
+  utterance.onerror = finish;
   window.speechSynthesis.speak(utterance);
 }
 
 function stopRecognition() {
   recognitionExpected = false;
+  clearTimeout(recognitionRestartTimer);
+  recognitionRestartTimer = null;
   if (recognition) {
+    recognition.onstart = null;
+    recognition.onresult = null;
+    recognition.onerror = null;
     recognition.onend = null;
     try { recognition.abort(); } catch (_) {}
     recognition = null;
@@ -1168,28 +1260,21 @@ function stopSpeechAndRecognition() {
   window.speechSynthesis?.cancel?.();
 }
 
-function setAudioStatus(message, seconds = null) {
-  if (!audioStatus) return;
-  audioStatus.hidden = false;
-  audioStatusText.textContent = message;
-  audioCountdown.textContent = seconds === null ? '' : `${seconds}s`;
-}
-
 function normalizeVoiceChoice(value) {
-  const clean = value.toLocaleLowerCase('pt-BR')
+  const clean = String(value || '').toLocaleLowerCase('pt-BR')
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9 ]/g, ' ').trim();
-  const words = clean.split(/\s+/);
+  const words = clean.split(/\s+/).filter(Boolean);
   if (words.includes('a') || clean.includes('alternativa a') || words.includes('ah')) return 0;
-  if (words.includes('b') || clean.includes('alternativa b') || words.includes('be')) return 1;
-  if (words.includes('c') || clean.includes('alternativa c') || words.includes('ce')) return 2;
-  if (words.includes('d') || clean.includes('alternativa d') || words.includes('de')) return 3;
+  if (words.includes('b') || clean.includes('alternativa b') || words.includes('be') || words.includes('bê')) return 1;
+  if (words.includes('c') || clean.includes('alternativa c') || words.includes('ce') || words.includes('cê')) return 2;
+  if (words.includes('d') || clean.includes('alternativa d') || words.includes('de') || words.includes('dê')) return 3;
   return null;
 }
 
 function startTenSecondCountdown(sessionId) {
   let seconds = 10;
-  setAudioStatus('Diga A, B, C ou D.', seconds);
+  setAudioStatus('Ouvindo. Diga A, B, C ou D.', seconds);
   clearInterval(countdownTimer);
   clearTimeout(responseTimer);
   countdownTimer = setInterval(() => {
@@ -1200,31 +1285,52 @@ function startTenSecondCountdown(sessionId) {
     if (!quizAudioEnabled || sessionId !== audioSessionId) return;
     stopRecognition();
     speakText('Não ouvi uma alternativa. Repita A, B, C ou D.', () => listenForQuizChoice(sessionId));
-  }, 10000);
+  }, 10500);
 }
 
-function listenForQuizChoice(sessionId) {
-  if (!quizAudioEnabled || sessionId !== audioSessionId) return;
-  if (!SpeechRecognition) {
-    ativarModoRespostaPorBotoes();
-    setAudioStatus('Reconhecimento de voz indisponível. Escolha tocando em A, B, C ou D.');
-    mostrarAviso('Seu navegador não oferece reconhecimento por voz. Responda usando os botões A, B, C ou D.');
+async function listenForQuizChoice(sessionId) {
+  if (!quizAudioEnabled || sessionId !== audioSessionId || document.hidden) return;
+  if (!SpeechRecognitionAPI) {
+    ativarModoRespostaPorBotoes('Reconhecimento de voz indisponível. Escolha tocando em A, B, C ou D.');
     return;
   }
+
+  const permission = await queryMicrophonePermission();
+  if (permission === 'denied' || microphoneDenied) {
+    ativarModoRespostaPorBotoes('Microfone bloqueado. Libere a permissão ou responda tocando em A, B, C ou D.');
+    return;
+  }
+  if (!microphoneAuthorized && permission !== 'granted') {
+    showMicrophoneButton();
+    return;
+  }
+
   stopRecognition();
-  recognition = new SpeechRecognition();
+  // Pausa extra para Android/PWA instalado após a fala terminar.
+  await new Promise(resolve => setTimeout(resolve, 350));
+  if (!quizAudioEnabled || sessionId !== audioSessionId || document.hidden) return;
+
+  recognition = new SpeechRecognitionAPI();
   recognition.lang = 'pt-BR';
   recognition.interimResults = false;
   recognition.maxAlternatives = 5;
   recognition.continuous = false;
   recognitionExpected = true;
-  startTenSecondCountdown(sessionId);
+
+  recognition.onstart = () => {
+    if (!quizAudioEnabled || sessionId !== audioSessionId) return;
+    startTenSecondCountdown(sessionId);
+  };
 
   recognition.onresult = event => {
     if (!quizAudioEnabled || sessionId !== audioSessionId) return;
-    const alternatives = [];
-    for (let i = 0; i < event.results[0].length; i++) alternatives.push(event.results[0][i].transcript);
-    const choice = alternatives.map(normalizeVoiceChoice).find(value => value !== null && value !== undefined);
+    const transcripts = [];
+    for (let resultIndex = 0; resultIndex < event.results.length; resultIndex++) {
+      for (let altIndex = 0; altIndex < event.results[resultIndex].length; altIndex++) {
+        transcripts.push(event.results[resultIndex][altIndex].transcript);
+      }
+    }
+    const choice = transcripts.map(normalizeVoiceChoice).find(value => value !== null && value !== undefined);
     stopRecognition();
     if (choice === null || choice === undefined) {
       speakText('Não entendi. Repita A, B, C ou D.', () => listenForQuizChoice(sessionId));
@@ -1232,31 +1338,65 @@ function listenForQuizChoice(sessionId) {
     }
     registerAudioChoice(choice, sessionId);
   };
+
   recognition.onerror = event => {
     if (!quizAudioEnabled || sessionId !== audioSessionId) return;
+    const error = event.error || 'unknown';
     stopRecognition();
-    if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
-      setAudioStatus('Permissão do microfone bloqueada. Libere o microfone ou responda por toque.');
+    if (error === 'not-allowed' || error === 'service-not-allowed') {
+      microphoneAuthorized = false;
+      microphoneDenied = true;
+      localStorage.removeItem('sss-microphone-authorized');
+      localStorage.setItem('sss-microphone-denied', 'true');
+      ativarModoRespostaPorBotoes('Microfone bloqueado. Responda tocando em A, B, C ou D.');
       speakText('O acesso ao microfone foi bloqueado. Responda tocando em uma alternativa.');
       return;
     }
-    speakText('Não entendi. Repita A, B, C ou D.', () => listenForQuizChoice(sessionId));
-  };
-  recognition.onend = () => {
-    if (recognitionExpected && quizAudioEnabled && sessionId === audioSessionId) {
-      recognitionExpected = false;
+    if (error === 'audio-capture') {
+      ativarModoRespostaPorBotoes('O microfone não está disponível. Verifique se outro aplicativo está usando-o.');
+      return;
     }
+    if (error === 'network') {
+      ativarModoRespostaPorBotoes('O reconhecimento de voz precisa de internet neste celular. Use os botões A, B, C ou D.');
+      return;
+    }
+    if (error === 'no-speech' || error === 'aborted') {
+      speakText('Não entendi. Repita A, B, C ou D.', () => listenForQuizChoice(sessionId));
+      return;
+    }
+    ativarModoRespostaPorBotoes('Não foi possível ouvir a resposta. Use os botões A, B, C ou D.');
   };
-  try { recognition.start(); } catch (_) {
-    speakText('Não entendi. Repita A, B, C ou D.', () => listenForQuizChoice(sessionId));
+
+  recognition.onend = () => {
+    if (!recognitionExpected || !quizAudioEnabled || sessionId !== audioSessionId) return;
+    recognitionExpected = false;
+    clearTimeout(recognitionRestartTimer);
+    recognitionRestartTimer = setTimeout(() => {
+      if (quizAudioEnabled && sessionId === audioSessionId) {
+        speakText('Não entendi. Repita A, B, C ou D.', () => listenForQuizChoice(sessionId));
+      }
+    }, 250);
+  };
+
+  try {
+    recognition.start();
+  } catch (error) {
+    stopRecognition();
+    // InvalidStateError é comum no Android quando uma sessão anterior ainda
+    // está encerrando. Aguarda e tenta novamente uma vez.
+    recognitionRestartTimer = setTimeout(() => {
+      if (quizAudioEnabled && sessionId === audioSessionId) listenForQuizChoice(sessionId);
+    }, 900);
   }
 }
 
 function registerAudioChoice(choice, sessionId) {
   if (!quizAudioEnabled || sessionId !== audioSessionId) return;
+  stopRecognition();
   const input = quizForm.querySelector(`input[name="q${audioQuestionIndex}"][value="${choice}"]`);
   if (!input) return;
   input.checked = true;
+  input.dispatchEvent(new Event('change', { bubbles: true }));
   input.closest('.question-card')?.classList.remove('unanswered');
   updateProgress();
   const letter = letters[choice];
@@ -1270,9 +1410,7 @@ function registerAudioChoice(choice, sessionId) {
       quizAudioToggle?.setAttribute('aria-pressed', 'false');
       if (quizAudioToggle) quizAudioToggle.textContent = '🔊 Ativar modo áudio';
       setAudioStatus('Todas as questões foram respondidas. Corrigindo o simulado...');
-      speakText('Todas as questões foram respondidas. Agora farei a correção.', () => {
-        quizForm.requestSubmit();
-      });
+      speakText('Todas as questões foram respondidas. Agora farei a correção.', () => quizForm.requestSubmit());
       return;
     }
     audioQuestionIndex = next;
@@ -1291,10 +1429,16 @@ function readCurrentQuizQuestion(sessionId = audioSessionId) {
   });
   const alternatives = item.o.map((text, index) => `Alternativa ${letters[index]}. ${text}.`).join(' ');
   setAudioStatus(`Lendo questão ${audioQuestionIndex + 1} de ${questions.length}...`);
-  speakText(`Questão ${audioQuestionIndex + 1}. ${item.q}. ${alternatives}`, () => listenForQuizChoice(sessionId));
+  speakText(`Questão ${audioQuestionIndex + 1}. ${item.q}. ${alternatives}`, () => {
+    if (buttonAnswerFallbackEnabled) {
+      setAudioStatus('Escolha tocando em A, B, C ou D.');
+      return;
+    }
+    listenForQuizChoice(sessionId);
+  });
 }
 
-function startQuizAudio() {
+async function startQuizAudio() {
   if (corrected) {
     notifyApp('Refaça o simulado para usar o modo áudio.');
     return;
@@ -1303,6 +1447,22 @@ function startQuizAudio() {
     notifyApp('Este navegador não suporta leitura por voz.');
     return;
   }
+
+  // O clique neste botão é uma ação direta do usuário e, portanto, é o
+  // momento correto para solicitar a permissão oficial do microfone.
+  if (SpeechRecognitionAPI && !microphoneAuthorized && !microphoneDenied) {
+    const permission = await queryMicrophonePermission();
+    if (permission === 'granted') microphoneAuthorized = true;
+    else if (permission === 'denied') microphoneDenied = true;
+    else await solicitarPermissaoMicrofone();
+  }
+
+  if (!SpeechRecognitionAPI) {
+    ativarModoRespostaPorBotoes('Este celular não suporta resposta por voz. Use os botões A, B, C ou D.');
+  } else if (microphoneDenied) {
+    ativarModoRespostaPorBotoes('Microfone bloqueado. Libere nas configurações do site ou use os botões A, B, C ou D.');
+  }
+
   flashcardAudioEnabled = false;
   flashcardAudioToggle?.setAttribute('aria-pressed', 'false');
   if (flashcardAudioToggle) flashcardAudioToggle.textContent = '🔊 Áudio automático';
@@ -1310,8 +1470,8 @@ function startQuizAudio() {
   quizAudioEnabled = true;
   const firstUnanswered = questions.findIndex((_, index) => !quizForm.querySelector(`input[name="q${index}"]:checked`));
   audioQuestionIndex = firstUnanswered === -1 ? 0 : firstUnanswered;
-  quizAudioToggle.setAttribute('aria-pressed', 'true');
-  quizAudioToggle.textContent = '⏹ Desativar áudio';
+  quizAudioToggle?.setAttribute('aria-pressed', 'true');
+  if (quizAudioToggle) quizAudioToggle.textContent = '⏹ Desativar áudio';
   const sessionId = audioSessionId;
   readCurrentQuizQuestion(sessionId);
 }
@@ -1330,13 +1490,35 @@ quizAudioToggle?.addEventListener('click', () => {
   if (quizAudioEnabled) stopQuizAudio(); else startQuizAudio();
 });
 
-// Também permite responder por toque durante o modo áudio e avançar automaticamente.
+enableMicrophoneButton?.addEventListener('click', async () => {
+  const allowed = await solicitarPermissaoMicrofone();
+  if (!allowed) return;
+  if (!quizAudioEnabled) await startQuizAudio();
+  else {
+    const sessionId = audioSessionId;
+    readCurrentQuizQuestion(sessionId);
+  }
+});
+
+// Resposta por toque: sempre disponível e, no modo áudio, confirma e avança.
 quizForm.addEventListener('change', event => {
   if (!quizAudioEnabled || !event.target.matches('input[type="radio"]')) return;
   const index = Number(event.target.name.replace('q', ''));
   if (index !== audioQuestionIndex) return;
-  stopRecognition();
-  registerAudioChoice(Number(event.target.value), audioSessionId);
+  const choice = Number(event.target.value);
+  if (!Number.isInteger(choice)) return;
+  registerAudioChoice(choice, audioSessionId);
+});
+
+// Teclado físico/Bluetooth: A, B, C ou D.
+document.addEventListener('keydown', event => {
+  if (!quizAudioEnabled || corrected || /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName || '')) return;
+  const key = event.key.toLowerCase();
+  const choice = ['a', 'b', 'c', 'd'].indexOf(key);
+  if (choice >= 0) {
+    event.preventDefault();
+    registerAudioChoice(choice, audioSessionId);
+  }
 });
 
 function speakFlashcardQuestion() {
@@ -1348,19 +1530,50 @@ function toggleFlashcardAudio() {
   flashcardAudioEnabled = !flashcardAudioEnabled;
   if (flashcardAudioEnabled) {
     stopQuizAudio(false);
-    flashcardAudioToggle.setAttribute('aria-pressed', 'true');
-    flashcardAudioToggle.textContent = '⏹ Desativar áudio';
+    flashcardAudioToggle?.setAttribute('aria-pressed', 'true');
+    if (flashcardAudioToggle) flashcardAudioToggle.textContent = '⏹ Desativar áudio';
     speakFlashcardQuestion();
   } else {
     stopSpeechAndRecognition();
-    flashcardAudioToggle.setAttribute('aria-pressed', 'false');
-    flashcardAudioToggle.textContent = '🔊 Áudio automático';
+    flashcardAudioToggle?.setAttribute('aria-pressed', 'false');
+    if (flashcardAudioToggle) flashcardAudioToggle.textContent = '🔊 Áudio automático';
   }
 }
 
 flashcardAudioToggle?.addEventListener('click', toggleFlashcardAudio);
 
+// Ao voltar para o PWA, retoma a questão somente se o modo áudio estava ativo.
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    stopRecognition();
+    return;
+  }
+  if (quizAudioEnabled && !corrected) {
+    const sessionId = audioSessionId;
+    setTimeout(() => readCurrentQuizQuestion(sessionId), 450);
+  }
+});
+
 // Garante que qualquer reinício ou correção encerre a sessão de voz atual.
 resetButton.addEventListener('click', () => stopQuizAudio(false));
 quizForm.addEventListener('submit', () => stopQuizAudio(false));
 window.addEventListener('pagehide', stopSpeechAndRecognition);
+
+// Inicialização segura: evita erro em celulares sem SpeechRecognition.
+(async function initializeAudioCompatibility() {
+  if (!SpeechRecognitionAPI) {
+    ativarModoRespostaPorBotoes('Seu navegador não oferece reconhecimento por voz. Use os botões A, B, C ou D.');
+    return;
+  }
+  const permission = await queryMicrophonePermission();
+  if (permission === 'granted') {
+    microphoneAuthorized = true;
+    microphoneDenied = false;
+    localStorage.setItem('sss-microphone-authorized', 'true');
+    localStorage.removeItem('sss-microphone-denied');
+  } else if (permission === 'denied') {
+    microphoneAuthorized = false;
+    microphoneDenied = true;
+    ativarModoRespostaPorBotoes('Microfone bloqueado. Libere nas configurações do site ou use os botões A, B, C ou D.');
+  }
+})();
