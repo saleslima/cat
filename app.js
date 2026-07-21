@@ -1439,8 +1439,10 @@ function registerAudioChoice(choice, sessionId) {
   speakText(`Você respondeu ${letter}. ${optionText}.`, () => {
     processingChoice = false;
     if (!quizAudioEnabled || sessionId !== audioSessionId) return;
-    const next = questions.findIndex((_, index) => index > audioQuestionIndex && !quizForm.querySelector(`input[name="q${index}"]:checked`));
-    if (next === -1) {
+    const isAnswered = i => !!quizForm.querySelector(`input[name="q${i}"]:checked`);
+    // Só encerra quando NENHUMA questão estiver em aberto.
+    const remaining = questions.reduce((total, _, i) => total + (isAnswered(i) ? 0 : 1), 0);
+    if (remaining === 0) {
       quizAudioEnabled = false;
       quizAudioToggle?.setAttribute('aria-pressed', 'false');
       if (quizAudioToggle) quizAudioToggle.textContent = '🔊 Ativar modo áudio';
@@ -1448,7 +1450,14 @@ function registerAudioChoice(choice, sessionId) {
       speakText('Todas as questões foram respondidas. Agora farei a correção.', () => quizForm.requestSubmit());
       return;
     }
-    audioQuestionIndex = next;
+    // Avança para a próxima questão em aberto, retornando ao início se preciso.
+    let nextIndex = -1;
+    for (let step = 1; step <= questions.length; step++) {
+      const candidate = (audioQuestionIndex + step) % questions.length;
+      if (!isAnswered(candidate)) { nextIndex = candidate; break; }
+    }
+    if (nextIndex === -1) return;
+    audioQuestionIndex = nextIndex;
     readCurrentQuizQuestion(sessionId);
   });
 }

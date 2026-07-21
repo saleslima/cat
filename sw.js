@@ -1,4 +1,4 @@
-const CACHE = 'sss-analise-economica-v8-audio-answer-fix';
+const CACHE = 'sss-analise-economica-v9-audio-advance-fix';
 const CORE = [
   './','./index.html','./styles.css','./app.js','./manifest.webmanifest',
   './assets/img/logo.png','./assets/icons/icon-192x192.png','./assets/icons/icon-512x512.png'
