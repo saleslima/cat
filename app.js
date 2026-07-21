@@ -1110,6 +1110,8 @@ let audioSessionId = 0;
 let microphoneAuthorized = false;
 let microphoneDenied = false;
 let permissionRequestInProgress = false;
+// Evita recursão/duplicidade ao registrar a mesma resposta (voz e toque).
+let processingChoice = false;
 
 // Uma recusa não pode ficar gravada para sempre: no Android o usuário pode
 // liberar o microfone depois, nas configurações do PWA.
@@ -1201,10 +1203,12 @@ async function solicitarPermissaoMicrofone() {
     microphoneAuthorized = false;
     microphoneDenied = error?.name === 'NotAllowedError' || error?.name === 'SecurityError';
     localStorage.removeItem('sss-microphone-authorized');
-    showMicrophoneButton('O microfone está bloqueado. Libere-o nas permissões do aplicativo e toque em “Tentar permitir microfone”.');
-    buttonAnswerFallbackEnabled = true;
-    document.body.classList.add('voice-fallback-buttons');
-    mostrarAviso('Libere o microfone nas permissões do aplicativo para responder por voz.');
+    // Só forçamos os botões quando o acesso foi realmente negado. Em falhas
+    // transitórias o SpeechRecognition ainda pode funcionar (principalmente no PC).
+    if (microphoneDenied) {
+      showMicrophoneButton('O microfone está bloqueado. Libere-o nas permissões do aplicativo e toque em “Tentar permitir microfone”.');
+      mostrarAviso('Libere o microfone nas permissões do aplicativo para responder por voz.');
+    }
     return false;
   } finally {
     permissionRequestInProgress = false;
@@ -1319,10 +1323,9 @@ async function listenForQuizChoice(sessionId) {
     microphoneAuthorized = true;
     microphoneDenied = false;
   }
-  if (!microphoneAuthorized && permission !== 'granted') {
-    showMicrophoneButton();
-    return;
-  }
+  // Não bloqueamos quando a permissão está "prompt"/desconhecida: no desktop
+  // o próprio SpeechRecognition abre o pedido de acesso; erros reais de bloqueio
+  // são tratados em recognition.onerror.
 
   stopRecognition();
   // Pausa extra para Android/PWA instalado após a fala terminar.
@@ -1420,18 +1423,21 @@ async function listenForQuizChoice(sessionId) {
 }
 
 function registerAudioChoice(choice, sessionId) {
-  if (!quizAudioEnabled || sessionId !== audioSessionId) return;
-  stopRecognition();
+  if (!quizAudioEnabled || sessionId !== audioSessionId || processingChoice) return;
   const input = quizForm.querySelector(`input[name="q${audioQuestionIndex}"][value="${choice}"]`);
   if (!input) return;
+  processingChoice = true;
+  stopRecognition();
   input.checked = true;
-  input.dispatchEvent(new Event('change', { bubbles: true }));
+  // Não redisparamos "change" aqui: isso reentraria neste mesmo handler e
+  // criava um laço infinito ao aceitar respostas (voz ou toque).
   input.closest('.question-card')?.classList.remove('unanswered');
   updateProgress();
   const letter = letters[choice];
   const optionText = questions[audioQuestionIndex].o[choice];
   setAudioStatus(`Resposta reconhecida: ${letter}.`);
   speakText(`Você respondeu ${letter}. ${optionText}.`, () => {
+    processingChoice = false;
     if (!quizAudioEnabled || sessionId !== audioSessionId) return;
     const next = questions.findIndex((_, index) => index > audioQuestionIndex && !quizForm.querySelector(`input[name="q${index}"]:checked`));
     if (next === -1) {
@@ -1503,6 +1509,7 @@ async function startQuizAudio() {
   flashcardAudioToggle?.setAttribute('aria-pressed', 'false');
   if (flashcardAudioToggle) flashcardAudioToggle.textContent = '🔊 Áudio automático';
   stopSpeechAndRecognition();
+  processingChoice = false;
   quizAudioEnabled = true;
   const firstUnanswered = questions.findIndex((_, index) => !quizForm.querySelector(`input[name="q${index}"]:checked`));
   audioQuestionIndex = firstUnanswered === -1 ? 0 : firstUnanswered;
@@ -1514,6 +1521,7 @@ async function startQuizAudio() {
 
 function stopQuizAudio(announce = true) {
   quizAudioEnabled = false;
+  processingChoice = false;
   stopSpeechAndRecognition();
   quizAudioToggle?.setAttribute('aria-pressed', 'false');
   if (quizAudioToggle) quizAudioToggle.textContent = '🔊 Ativar modo áudio';
