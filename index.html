@@ -53,7 +53,7 @@
         <span class="study-card__content">
           <small>Material de estudo</small>
           <strong>Estudar com flashcards</strong>
-          <span>Perguntas exclusivas, diferentes das 40 questões do simulado.</span>
+          <span>120 perguntas com respostas aprofundadas e fontes complementares.</span>
         </span>
         <span class="study-card__arrow" aria-hidden="true">→</span>
       </button>
@@ -136,7 +136,7 @@
         <span id="flashcard-aula-label">História Econômica Brasileira</span>
       </div>
 
-      <button id="flashcard" class="flashcard" type="button" aria-label="Virar flashcard">
+      <div id="flashcard" class="flashcard" role="button" tabindex="0" aria-label="Virar flashcard">
         <span class="flashcard__inner">
           <span class="flashcard__face flashcard__front">
             <small>Pergunta</small>
@@ -144,12 +144,16 @@
             <em>Clique no card para ver a resposta</em>
           </span>
           <span class="flashcard__face flashcard__back">
-            <small>Resposta</small>
-            <strong id="flashcard-answer"></strong>
+            <small>Resposta detalhada</small>
+            <span class="flashcard-answer-content">
+              <strong id="flashcard-answer"></strong>
+              <span id="flashcard-detail" class="flashcard-detail"></span>
+            </span>
+            <span id="flashcard-sources" class="flashcard-sources" aria-label="Fontes complementares"></span>
             <em>Clique novamente para voltar</em>
           </span>
         </span>
-      </button>
+      </div>
 
       <div class="flashcards-controls">
         <button id="previous-flashcard" class="secondary-button" type="button">← Anterior</button>

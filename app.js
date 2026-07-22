@@ -150,7 +150,7 @@ function showResults(score, wrong) {
     ? "Excelente resultado. Você demonstrou ótimo domínio dos conteúdos das seis aulas."
     : percent >= 60
       ? "Bom resultado. Revise as explicações abaixo para consolidar os pontos que ainda geraram dúvida."
-      : "Continue estudando. Use as explicações e os PDFs para revisar os temas que precisam de reforço.";
+      : "Continue estudando. Use as explicações detalhadas e os flashcards com fontes para revisar os temas que precisam de reforço.";
 
   document.getElementById("answer-key-grid").innerHTML = questions.map((item, index) =>
     `<div class="key-item"><span>${index + 1}.</span> <strong>${letters[item.a]}</strong></div>`
@@ -274,723 +274,1380 @@ const flashcardsData = [
     "aula": 1,
     "titulo": "História Econômica Brasileira",
     "q": "Por que a escassez é central para a ciência econômica?",
-    "r": "Porque os recursos são limitados enquanto as necessidades humanas são amplas, exigindo escolhas e alocação eficiente."
+    "r": "Porque os recursos são limitados enquanto as necessidades humanas são amplas, exigindo escolhas e alocação eficiente.",
+    "d": "Esse conflito obriga famílias, empresas e governos a comparar alternativas. Toda escolha envolve um trade-off e um custo de oportunidade: ao direcionar recursos para uma finalidade, outra possibilidade deixa de ser atendida.",
+    "fontes": [
+      "openstax_intro"
+    ]
   },
   {
     "aula": 1,
     "titulo": "História Econômica Brasileira",
     "q": "Quais são os quatro fatores produtivos destacados no material?",
-    "r": "Terra, capital, trabalho e tecnologia."
+    "r": "Terra, capital, trabalho e tecnologia.",
+    "d": "Terra reúne recursos naturais; trabalho corresponde ao esforço humano; capital inclui máquinas, instalações e equipamentos; tecnologia representa conhecimentos e métodos que elevam a produtividade. A combinação desses fatores determina a capacidade de produção.",
+    "fontes": [
+      "openstax_intro"
+    ]
   },
   {
     "aula": 1,
     "titulo": "História Econômica Brasileira",
     "q": "Como a inflação reduz o poder de compra?",
-    "r": "Ao elevar de forma generalizada os preços, fazendo com que a mesma renda compre menos bens e serviços."
+    "r": "Ao elevar de forma generalizada os preços, fazendo com que a mesma renda compre menos bens e serviços.",
+    "d": "Quando os preços crescem mais rápido que salários e rendimentos, a renda real diminui. O efeito costuma ser mais severo para quem possui renda fixa ou pouca capacidade de renegociar preços e salários.",
+    "fontes": [
+      "ipea_real",
+      "bcb_monetaria"
+    ]
   },
   {
     "aula": 1,
     "titulo": "História Econômica Brasileira",
     "q": "O que defendia a escola fisiocrata?",
-    "r": "Que a terra e a atividade agrícola eram a principal fonte de riqueza e seguiam uma ordem natural."
+    "r": "Que a terra e a atividade agrícola eram a principal fonte de riqueza e seguiam uma ordem natural.",
+    "d": "Os fisiocratas surgiram na França do século XVIII e criticavam o excesso de intervenção mercantilista. Para eles, a agricultura gerava um produto líquido capaz de sustentar as demais atividades econômicas.",
+    "fontes": [
+      "openstax_intro"
+    ]
   },
   {
     "aula": 1,
     "titulo": "História Econômica Brasileira",
     "q": "Quem foram dois nomes associados à Fisiocracia?",
-    "r": "François Quesnay e Anne Robert Jacques Turgot."
+    "r": "François Quesnay e Anne Robert Jacques Turgot.",
+    "d": "Quesnay formulou o Tableau Économique, uma representação pioneira da circulação da renda. Turgot defendeu reformas, liberdade de comércio e menor interferência estatal em várias atividades econômicas.",
+    "fontes": [
+      "openstax_intro"
+    ]
   },
   {
     "aula": 1,
     "titulo": "História Econômica Brasileira",
     "q": "O que caracteriza um ciclo econômico brasileiro?",
-    "r": "O predomínio temporário de uma atividade, produto ou setor na geração de renda, exportações e investimentos."
+    "r": "O predomínio temporário de uma atividade, produto ou setor na geração de renda, exportações e investimentos.",
+    "d": "Nos ciclos do açúcar, ouro, café e outros produtos, a expansão de uma atividade reorganizou trabalho, infraestrutura, crédito e comércio exterior. A concentração em um produto, porém, aumentava a exposição a crises de preço e demanda.",
+    "fontes": [
+      "ipea_industria"
+    ]
   },
   {
     "aula": 1,
     "titulo": "História Econômica Brasileira",
     "q": "Por que a economia brasileira foi historicamente vulnerável ao exterior?",
-    "r": "Porque dependeu de exportações concentradas e de importações de bens, tecnologia e insumos."
+    "r": "Porque dependeu de exportações concentradas e de importações de bens, tecnologia e insumos.",
+    "d": "Essa dependência tornou renda, arrecadação e investimento sensíveis aos preços internacionais, ao câmbio e à disponibilidade de financiamento externo. Choques fora do país podiam ser rapidamente transmitidos à economia doméstica.",
+    "fontes": [
+      "ipea_industria"
+    ]
   },
   {
     "aula": 1,
     "titulo": "História Econômica Brasileira",
     "q": "Qual foi o papel do café na economia brasileira?",
-    "r": "Gerou divisas, estimulou infraestrutura, urbanização e acumulação de capital para a industrialização."
+    "r": "Gerou divisas, estimulou infraestrutura, urbanização e acumulação de capital para a industrialização.",
+    "d": "A renda do café financiou ferrovias, portos, bancos e atividades urbanas, especialmente no Sudeste. Também contribuiu para a formação de mercados consumidores e de capital que mais tarde apoiaram a indústria.",
+    "fontes": [
+      "ipea_industria"
+    ]
   },
   {
     "aula": 1,
     "titulo": "História Econômica Brasileira",
     "q": "O que significa substituição de importações?",
-    "r": "Produzir internamente bens antes comprados do exterior para reduzir dependência e fortalecer a indústria nacional."
+    "r": "Produzir internamente bens antes comprados do exterior para reduzir dependência e fortalecer a indústria nacional.",
+    "d": "A estratégia normalmente combina proteção comercial, crédito, infraestrutura e investimento público ou privado. Ela pode ampliar a capacidade produtiva, mas também exige produtividade e escala para evitar uma indústria permanentemente dependente de proteção.",
+    "fontes": [
+      "ipea_industria"
+    ]
   },
   {
     "aula": 1,
     "titulo": "História Econômica Brasileira",
     "q": "Como a crise de 1929 afetou o Brasil?",
-    "r": "Reduziu a demanda e os preços do café, fragilizando o modelo agroexportador e incentivando mudanças produtivas."
+    "r": "Reduziu a demanda e os preços do café, fragilizando o modelo agroexportador e incentivando mudanças produtivas.",
+    "d": "A queda das exportações reduziu divisas e renda no setor cafeeiro. Ao mesmo tempo, a dificuldade de importar e a mudança de política econômica favoreceram a produção interna de bens antes comprados no exterior.",
+    "fontes": [
+      "ipea_industria"
+    ]
   },
   {
     "aula": 1,
     "titulo": "História Econômica Brasileira",
     "q": "Por que planos econômicos precisam considerar as causas da inflação?",
-    "r": "Porque medidas inadequadas podem controlar sintomas temporariamente sem corrigir desequilíbrios estruturais."
+    "r": "Porque medidas inadequadas podem controlar sintomas temporariamente sem corrigir desequilíbrios estruturais.",
+    "d": "A inflação pode resultar de excesso de demanda, aumento de custos, desorganização fiscal, choques cambiais ou mecanismos de indexação. Um plano eficaz precisa identificar quais canais estão ativos e coordenar instrumentos monetários, fiscais e institucionais.",
+    "fontes": [
+      "ipea_real",
+      "bcb_monetaria"
+    ]
   },
   {
     "aula": 1,
     "titulo": "História Econômica Brasileira",
     "q": "O que foi a inércia inflacionária?",
-    "r": "A continuidade da inflação por reajustes automáticos de preços, salários e contratos baseados na inflação passada."
+    "r": "A continuidade da inflação por reajustes automáticos de preços, salários e contratos baseados na inflação passada.",
+    "d": "Quando contratos são reajustados pela inflação passada, a alta de preços é incorporada às decisões futuras. Mesmo após a redução do choque inicial, a indexação mantém o processo e dificulta a estabilização.",
+    "fontes": [
+      "ipea_real",
+      "bcb_monetaria"
+    ]
   },
   {
     "aula": 1,
     "titulo": "História Econômica Brasileira",
     "q": "Qual era o objetivo dos congelamentos de preços?",
-    "r": "Interromper rapidamente a escalada inflacionária impedindo reajustes imediatos."
+    "r": "Interromper rapidamente a escalada inflacionária impedindo reajustes imediatos.",
+    "d": "O congelamento buscava funcionar como um choque nominal, impedindo que empresas e trabalhadores continuassem remarcando preços e salários. Sem ajuste fiscal, monetário e de expectativas, porém, o efeito tende a ser temporário.",
+    "fontes": [
+      "ipea_real",
+      "bcb_monetaria"
+    ]
   },
   {
     "aula": 1,
     "titulo": "História Econômica Brasileira",
     "q": "Qual risco acompanha o congelamento de preços?",
-    "r": "Desabastecimento, mercado paralelo e perda de rentabilidade quando preços ficam abaixo dos custos."
+    "r": "Desabastecimento, mercado paralelo e perda de rentabilidade quando preços ficam abaixo dos custos.",
+    "d": "Se o preço fixado não cobre custos ou fica abaixo do equilíbrio de mercado, produtores reduzem a oferta. O resultado pode ser escassez, queda de qualidade, filas, ágio e transações informais.",
+    "fontes": [
+      "ipea_real",
+      "bcb_monetaria"
+    ]
   },
   {
     "aula": 1,
     "titulo": "História Econômica Brasileira",
     "q": "O que foi a URV?",
-    "r": "Uma unidade de valor estável usada como referência antes da criação do real para quebrar a inércia inflacionária."
+    "r": "Uma unidade de valor estável usada como referência antes da criação do real para quebrar a inércia inflacionária.",
+    "d": "A URV funcionou como unidade de conta estável enquanto pagamentos ainda eram feitos em cruzeiros reais. Preços e contratos passaram a ser expressos nessa referência, permitindo sincronizar valores relativos antes da conversão para o real.",
+    "fontes": [
+      "ipea_real",
+      "bcb_monetaria"
+    ]
   },
   {
     "aula": 1,
     "titulo": "História Econômica Brasileira",
     "q": "Por que o Plano Real teve uma etapa de transição?",
-    "r": "Para alinhar preços e contratos gradualmente antes da nova moeda, reduzindo choques e indexação."
+    "r": "Para alinhar preços e contratos gradualmente antes da nova moeda, reduzindo choques e indexação.",
+    "d": "A transição separou a reorganização dos preços da troca definitiva da moeda. Isso ajudou a reduzir a indexação, alinhar contratos e construir confiança sem depender exclusivamente de um congelamento abrupto.",
+    "fontes": [
+      "ipea_real",
+      "bcb_monetaria"
+    ]
   },
   {
     "aula": 1,
     "titulo": "História Econômica Brasileira",
     "q": "Como o equilíbrio fiscal ajuda no controle da inflação?",
-    "r": "Reduz a necessidade de financiamento excessivo do governo e melhora a confiança na política econômica."
+    "r": "Reduz a necessidade de financiamento excessivo do governo e melhora a confiança na política econômica.",
+    "d": "Contas públicas mais previsíveis reduzem a percepção de que déficits serão financiados de forma inflacionária e diminuem pressões sobre juros e expectativas. O efeito depende também da qualidade do gasto, da dívida e da credibilidade das instituições.",
+    "fontes": [
+      "ipea_real",
+      "bcb_monetaria"
+    ]
   },
   {
     "aula": 1,
     "titulo": "História Econômica Brasileira",
     "q": "O que significa conjuntura econômica?",
-    "r": "O conjunto de condições econômicas de determinado período, como inflação, emprego, produção, juros e câmbio."
+    "r": "O conjunto de condições econômicas de determinado período, como inflação, emprego, produção, juros e câmbio.",
+    "d": "A conjuntura é um retrato do momento econômico e muda ao longo do ciclo. Sua análise combina indicadores correntes, expectativas e eventos políticos ou internacionais para avaliar riscos de curto e médio prazo.",
+    "fontes": [
+      "ibge_indicadores",
+      "ipea_industria"
+    ]
   },
   {
     "aula": 1,
     "titulo": "História Econômica Brasileira",
     "q": "Por que conhecer a história econômica ajuda na gestão financeira?",
-    "r": "Permite reconhecer padrões, riscos e efeitos de políticas sobre custos, crédito, demanda e investimentos."
+    "r": "Permite reconhecer padrões, riscos e efeitos de políticas sobre custos, crédito, demanda e investimentos.",
+    "d": "A história mostra como inflação, juros, câmbio e crises alteraram empresas e famílias em diferentes períodos. Esse repertório melhora a construção de cenários, a gestão de riscos e a escolha de políticas financeiras.",
+    "fontes": [
+      "ibge_indicadores",
+      "ipea_industria"
+    ]
   },
   {
     "aula": 1,
     "titulo": "História Econômica Brasileira",
     "q": "Como choques externos podem afetar empresas brasileiras?",
-    "r": "Podem alterar câmbio, preços de insumos, crédito, exportações e confiança, exigindo ajustes financeiros."
+    "r": "Podem alterar câmbio, preços de insumos, crédito, exportações e confiança, exigindo ajustes financeiros.",
+    "d": "O impacto ocorre por vários canais: encarecimento de importações, mudança na demanda externa, restrição de crédito e aumento da volatilidade. Empresas podem responder com hedge, diversificação de fornecedores, estoques estratégicos e revisão de preços.",
+    "fontes": [
+      "ibge_indicadores",
+      "ipea_industria"
+    ]
   },
   {
     "aula": 2,
     "titulo": "Conceitos Microeconômicos",
     "q": "O que a microeconomia estuda?",
-    "r": "O comportamento de consumidores, empresas e mercados específicos, incluindo preços, custos, oferta e demanda."
+    "r": "O comportamento de consumidores, empresas e mercados específicos, incluindo preços, custos, oferta e demanda.",
+    "d": "Ela examina decisões tomadas sob restrições e como essas decisões interagem nos mercados. O foco inclui formação de preços, comportamento do consumidor, produção, custos, concorrência e alocação de recursos.",
+    "fontes": [
+      "openstax_micro"
+    ]
   },
   {
     "aula": 2,
     "titulo": "Conceitos Microeconômicos",
     "q": "Qual é a diferença básica entre microeconomia e macroeconomia?",
-    "r": "A microeconomia analisa unidades individuais; a macroeconomia observa agregados da economia como um todo."
+    "r": "A microeconomia analisa unidades individuais; a macroeconomia observa agregados da economia como um todo.",
+    "d": "As duas áreas são complementares: decisões individuais formam resultados agregados, enquanto inflação, juros e desemprego influenciam consumidores e empresas. A diferença principal está no nível de análise.",
+    "fontes": [
+      "openstax_micro"
+    ]
   },
   {
     "aula": 2,
     "titulo": "Conceitos Microeconômicos",
     "q": "Quais perguntas fundamentais orientam a produção?",
-    "r": "O que produzir, quanto produzir e como produzir."
+    "r": "O que produzir, quanto produzir e como produzir.",
+    "d": "Também é necessário decidir para quem produzir e quais recursos utilizar. Essas escolhas dependem de tecnologia, custos, preferências dos consumidores e objetivos da organização.",
+    "fontes": [
+      "openstax_micro"
+    ]
   },
   {
     "aula": 2,
     "titulo": "Conceitos Microeconômicos",
     "q": "O que é demanda?",
-    "r": "A quantidade de um bem ou serviço que consumidores desejam e podem comprar em diferentes preços."
+    "r": "A quantidade de um bem ou serviço que consumidores desejam e podem comprar em diferentes preços.",
+    "d": "Desejo sem capacidade de pagamento não constitui demanda efetiva. A curva de demanda relaciona cada nível de preço à quantidade que os consumidores estão dispostos e aptos a adquirir, mantendo outros fatores constantes.",
+    "fontes": [
+      "openstax_demand",
+      "openstax_micro"
+    ]
   },
   {
     "aula": 2,
     "titulo": "Conceitos Microeconômicos",
     "q": "O que é oferta?",
-    "r": "A quantidade que produtores desejam e podem vender em diferentes preços."
+    "r": "A quantidade que produtores desejam e podem vender em diferentes preços.",
+    "d": "A oferta depende da capacidade produtiva e da rentabilidade esperada. Custos, tecnologia, impostos, expectativas e número de empresas podem alterar quanto será colocado no mercado a cada preço.",
+    "fontes": [
+      "openstax_demand",
+      "openstax_micro"
+    ]
   },
   {
     "aula": 2,
     "titulo": "Conceitos Microeconômicos",
     "q": "O que diz a lei da demanda?",
-    "r": "Mantidos os demais fatores, preços maiores tendem a reduzir a quantidade demandada."
+    "r": "Mantidos os demais fatores, preços maiores tendem a reduzir a quantidade demandada.",
+    "d": "A relação inversa ocorre pelo efeito substituição e pelo efeito renda: preços maiores tornam o bem relativamente menos atraente e reduzem o poder de compra. A regra admite exceções raras e pressupõe que os demais fatores não mudem.",
+    "fontes": [
+      "openstax_demand",
+      "openstax_micro"
+    ]
   },
   {
     "aula": 2,
     "titulo": "Conceitos Microeconômicos",
     "q": "O que diz a lei da oferta?",
-    "r": "Mantidos os demais fatores, preços maiores tendem a aumentar a quantidade ofertada."
+    "r": "Mantidos os demais fatores, preços maiores tendem a aumentar a quantidade ofertada.",
+    "d": "Preços mais altos podem aumentar a margem e tornar viável produzir unidades adicionais. A intensidade da resposta depende de capacidade, prazo, estoques e facilidade de ampliar a produção.",
+    "fontes": [
+      "openstax_demand",
+      "openstax_micro"
+    ]
   },
   {
     "aula": 2,
     "titulo": "Conceitos Microeconômicos",
     "q": "O que é preço de equilíbrio?",
-    "r": "O preço no qual a quantidade demandada é igual à quantidade ofertada."
+    "r": "O preço no qual a quantidade demandada é igual à quantidade ofertada.",
+    "d": "No equilíbrio não existe pressão sistemática para o preço subir ou cair. Isso não significa estabilidade permanente, pois mudanças na oferta ou na demanda criam um novo ponto de equilíbrio.",
+    "fontes": [
+      "openstax_demand",
+      "openstax_micro"
+    ]
   },
   {
     "aula": 2,
     "titulo": "Conceitos Microeconômicos",
     "q": "O que ocorre quando o preço está acima do equilíbrio?",
-    "r": "Surge excesso de oferta, pressionando o preço para baixo."
+    "r": "Surge excesso de oferta, pressionando o preço para baixo.",
+    "d": "O excedente aparece quando vendedores oferecem mais do que consumidores compram. Para reduzir estoques, empresas tendem a baixar preços, diminuir produção ou melhorar condições de venda.",
+    "fontes": [
+      "openstax_demand",
+      "openstax_micro"
+    ]
   },
   {
     "aula": 2,
     "titulo": "Conceitos Microeconômicos",
     "q": "O que ocorre quando o preço está abaixo do equilíbrio?",
-    "r": "Surge excesso de demanda, pressionando o preço para cima."
+    "r": "Surge excesso de demanda, pressionando o preço para cima.",
+    "d": "A escassez aparece quando consumidores desejam comprar mais do que está disponível. Filas, racionamento ou disputa entre compradores podem surgir até que preços, oferta ou demanda se ajustem.",
+    "fontes": [
+      "openstax_demand",
+      "openstax_micro"
+    ]
   },
   {
     "aula": 2,
     "titulo": "Conceitos Microeconômicos",
     "q": "O que desloca a curva de demanda?",
-    "r": "Mudanças em renda, preferências, população, expectativas e preços de bens relacionados."
+    "r": "Mudanças em renda, preferências, população, expectativas e preços de bens relacionados.",
+    "d": "Esses fatores alteram a demanda em todos os preços, deslocando a curva inteira. Uma mudança apenas no preço do próprio bem provoca movimento ao longo da curva, não deslocamento.",
+    "fontes": [
+      "openstax_demand",
+      "openstax_micro"
+    ]
   },
   {
     "aula": 2,
     "titulo": "Conceitos Microeconômicos",
     "q": "O que desloca a curva de oferta?",
-    "r": "Mudanças em custos, tecnologia, impostos, expectativas, número de produtores e condições naturais."
+    "r": "Mudanças em custos, tecnologia, impostos, expectativas, número de produtores e condições naturais.",
+    "d": "Uma redução de custos ou avanço tecnológico tende a deslocar a oferta para a direita; custos maiores fazem o contrário. É importante separar esses deslocamentos de uma simples variação na quantidade ofertada causada pelo preço do próprio produto.",
+    "fontes": [
+      "openstax_demand",
+      "openstax_micro"
+    ]
   },
   {
     "aula": 2,
     "titulo": "Conceitos Microeconômicos",
     "q": "O que são bens substitutos?",
-    "r": "Bens que atendem necessidades semelhantes, de modo que a alta do preço de um pode elevar a demanda do outro."
+    "r": "Bens que atendem necessidades semelhantes, de modo que a alta do preço de um pode elevar a demanda do outro.",
+    "d": "Exemplos comuns são café e chá ou marcas concorrentes de um mesmo produto. Quanto mais fácil a substituição, maior tende a ser a sensibilidade do consumidor ao preço.",
+    "fontes": [
+      "openstax_demand",
+      "openstax_micro"
+    ]
   },
   {
     "aula": 2,
     "titulo": "Conceitos Microeconômicos",
     "q": "O que são bens complementares?",
-    "r": "Bens consumidos em conjunto, de modo que a alta do preço de um pode reduzir a demanda do outro."
+    "r": "Bens consumidos em conjunto, de modo que a alta do preço de um pode reduzir a demanda do outro.",
+    "d": "Automóvel e combustível são um exemplo: o encarecimento persistente de um pode reduzir o uso e a demanda do outro. A intensidade depende de quão indispensável é o consumo conjunto.",
+    "fontes": [
+      "openstax_demand",
+      "openstax_micro"
+    ]
   },
   {
     "aula": 2,
     "titulo": "Conceitos Microeconômicos",
     "q": "O que mede a elasticidade-preço da demanda?",
-    "r": "A sensibilidade da quantidade demandada a uma variação no preço."
+    "r": "A sensibilidade da quantidade demandada a uma variação no preço.",
+    "d": "Ela é calculada como variação percentual da quantidade dividida pela variação percentual do preço. O indicador ajuda a prever efeitos sobre receita, volume vendido e repasse de custos.",
+    "fontes": [
+      "openstax_demand",
+      "openstax_micro"
+    ]
   },
   {
     "aula": 2,
     "titulo": "Conceitos Microeconômicos",
     "q": "Quando a demanda é considerada elástica?",
-    "r": "Quando a quantidade demandada varia proporcionalmente mais do que o preço."
+    "r": "Quando a quantidade demandada varia proporcionalmente mais do que o preço.",
+    "d": "Em demanda elástica, um aumento de preço tende a reduzir a receita total porque a perda percentual de volume é maior. Bens com muitos substitutos e compras adiáveis costumam apresentar maior elasticidade.",
+    "fontes": [
+      "openstax_demand",
+      "openstax_micro"
+    ]
   },
   {
     "aula": 2,
     "titulo": "Conceitos Microeconômicos",
     "q": "Quando a demanda é inelástica?",
-    "r": "Quando a quantidade demandada varia proporcionalmente menos do que o preço."
+    "r": "Quando a quantidade demandada varia proporcionalmente menos do que o preço.",
+    "d": "Em demanda inelástica, o volume reage pouco e um aumento de preço pode elevar a receita total. Necessidades básicas, ausência de substitutos e pequena participação no orçamento favorecem esse comportamento.",
+    "fontes": [
+      "openstax_demand",
+      "openstax_micro"
+    ]
   },
   {
     "aula": 2,
     "titulo": "Conceitos Microeconômicos",
     "q": "O que mede a elasticidade-renda?",
-    "r": "Como a quantidade demandada muda diante de alterações na renda do consumidor."
+    "r": "Como a quantidade demandada muda diante de alterações na renda do consumidor.",
+    "d": "Elasticidade-renda positiva indica bem normal; negativa indica bem inferior. Quando o crescimento da demanda supera proporcionalmente o aumento da renda, o bem pode ser classificado como superior ou de luxo.",
+    "fontes": [
+      "openstax_demand",
+      "openstax_micro"
+    ]
   },
   {
     "aula": 2,
     "titulo": "Conceitos Microeconômicos",
     "q": "O que é custo de oportunidade?",
-    "r": "O valor da melhor alternativa abandonada ao fazer uma escolha."
+    "r": "O valor da melhor alternativa abandonada ao fazer uma escolha.",
+    "d": "O custo relevante não é apenas o desembolso financeiro, mas o benefício que teria sido obtido com a melhor opção rejeitada. O conceito melhora decisões de investimento, uso do tempo e alocação de capital.",
+    "fontes": [
+      "openstax_micro"
+    ]
   },
   {
     "aula": 2,
     "titulo": "Conceitos Microeconômicos",
     "q": "Por que incentivos são importantes na microeconomia?",
-    "r": "Porque preços, impostos, subsídios e recompensas alteram decisões de consumidores e produtores."
+    "r": "Porque preços, impostos, subsídios e recompensas alteram decisões de consumidores e produtores.",
+    "d": "Agentes respondem a mudanças nos benefícios e custos marginais. Um incentivo pode gerar efeitos desejados, mas também consequências não previstas, por isso deve ser avaliado junto ao comportamento real das pessoas.",
+    "fontes": [
+      "openstax_micro"
+    ]
   },
   {
     "aula": 3,
     "titulo": "Estruturas de Mercado",
     "q": "Quais elementos definem uma estrutura de mercado?",
-    "r": "Número de empresas e compradores, tipo de produto, barreiras à entrada e poder sobre preços."
+    "r": "Número de empresas e compradores, tipo de produto, barreiras à entrada e poder sobre preços.",
+    "d": "Esses elementos determinam a intensidade da concorrência e o grau de liberdade estratégica das empresas. Também influenciam preços, inovação, lucros e facilidade de entrada de novos competidores.",
+    "fontes": [
+      "openstax_market",
+      "cade_simples"
+    ]
   },
   {
     "aula": 3,
     "titulo": "Estruturas de Mercado",
     "q": "O que caracteriza a concorrência perfeita?",
-    "r": "Muitos compradores e vendedores, produto homogêneo, informação ampla e livre entrada e saída."
+    "r": "Muitos compradores e vendedores, produto homogêneo, informação ampla e livre entrada e saída.",
+    "d": "É um modelo teórico de referência em que nenhuma empresa individual controla o preço. Na prática, poucos mercados cumprem integralmente todas essas condições, mas o modelo ajuda a comparar estruturas reais.",
+    "fontes": [
+      "openstax_market",
+      "cade_simples"
+    ]
   },
   {
     "aula": 3,
     "titulo": "Estruturas de Mercado",
     "q": "Por que uma firma competitiva é tomadora de preço?",
-    "r": "Porque sua produção individual é pequena diante do mercado e não consegue alterar o preço vigente."
+    "r": "Porque sua produção individual é pequena diante do mercado e não consegue alterar o preço vigente.",
+    "d": "Se cobrar acima do preço de mercado, os compradores migram para concorrentes com produto equivalente. A firma escolhe quanto produzir ao preço dado, considerando custos e capacidade.",
+    "fontes": [
+      "openstax_market",
+      "cade_simples"
+    ]
   },
   {
     "aula": 3,
     "titulo": "Estruturas de Mercado",
     "q": "O que caracteriza um monopólio?",
-    "r": "Um único vendedor, ausência de substitutos próximos e fortes barreiras à entrada."
+    "r": "Um único vendedor, ausência de substitutos próximos e fortes barreiras à entrada.",
+    "d": "O monopolista enfrenta a demanda do mercado e pode influenciar preço por meio da quantidade ofertada. Ainda assim, não possui poder ilimitado, pois enfrenta restrições de demanda, regulação e possíveis substitutos.",
+    "fontes": [
+      "cade",
+      "cade_simples"
+    ]
   },
   {
     "aula": 3,
     "titulo": "Estruturas de Mercado",
     "q": "Quais podem ser barreiras à entrada?",
-    "r": "Patentes, escala, controle de recursos, legislação, tecnologia, capital elevado e efeitos de rede."
+    "r": "Patentes, escala, controle de recursos, legislação, tecnologia, capital elevado e efeitos de rede.",
+    "d": "Barreiras podem ser legais, tecnológicas, financeiras ou estratégicas. Quanto maiores forem os custos e riscos de entrada, mais protegido fica o poder das empresas já estabelecidas.",
+    "fontes": [
+      "openstax_market",
+      "cade_simples"
+    ]
   },
   {
     "aula": 3,
     "titulo": "Estruturas de Mercado",
     "q": "O que é monopólio natural?",
-    "r": "Mercado em que uma única empresa atende a demanda com custo médio menor que várias concorrentes."
+    "r": "Mercado em que uma única empresa atende a demanda com custo médio menor que várias concorrentes.",
+    "d": "Isso ocorre em setores com custos fixos muito altos e custo marginal relativamente baixo, como certas redes de infraestrutura. A regulação costuma buscar evitar abuso sem destruir os ganhos de escala.",
+    "fontes": [
+      "cade",
+      "cade_simples"
+    ]
   },
   {
     "aula": 3,
     "titulo": "Estruturas de Mercado",
     "q": "O que caracteriza um oligopólio?",
-    "r": "Poucas empresas dominam o mercado e suas decisões são estrategicamente interdependentes."
+    "r": "Poucas empresas dominam o mercado e suas decisões são estrategicamente interdependentes.",
+    "d": "Como cada empresa representa parcela relevante do mercado, uma decisão de preço, capacidade ou publicidade afeta as demais. O resultado depende tanto da estratégia própria quanto da reação dos rivais.",
+    "fontes": [
+      "openstax_market",
+      "cade_simples"
+    ]
   },
   {
     "aula": 3,
     "titulo": "Estruturas de Mercado",
     "q": "O que é interdependência estratégica?",
-    "r": "A necessidade de prever e considerar as reações dos concorrentes antes de decidir."
+    "r": "A necessidade de prever e considerar as reações dos concorrentes antes de decidir.",
+    "d": "Esse raciocínio é estudado pela teoria dos jogos. Uma ação lucrativa isoladamente pode provocar resposta competitiva que reduz o benefício esperado.",
+    "fontes": [
+      "openstax_market",
+      "cade_simples"
+    ]
   },
   {
     "aula": 3,
     "titulo": "Estruturas de Mercado",
     "q": "O que é cartel?",
-    "r": "Acordo entre empresas para coordenar preços, produção ou divisão de mercado e reduzir concorrência."
+    "r": "Acordo entre empresas para coordenar preços, produção ou divisão de mercado e reduzir concorrência.",
+    "d": "Cartéis podem envolver fixação de preços, divisão de clientes, limitação de produção ou fraude em licitações. São acordos anticompetitivos e, no Brasil, podem gerar sanções administrativas e criminais.",
+    "fontes": [
+      "cade",
+      "cade_simples"
+    ]
   },
   {
     "aula": 3,
     "titulo": "Estruturas de Mercado",
     "q": "Por que cartéis são prejudiciais ao consumidor?",
-    "r": "Porque podem elevar preços, reduzir oferta, limitar inovação e diminuir alternativas."
+    "r": "Porque podem elevar preços, reduzir oferta, limitar inovação e diminuir alternativas.",
+    "d": "Além de transferir renda para os participantes, o cartel reduz eficiência e pode impedir concorrentes mais produtivos de crescer. O dano pode atingir governos e contribuintes quando ocorre em compras públicas.",
+    "fontes": [
+      "openstax_market",
+      "cade_simples"
+    ]
   },
   {
     "aula": 3,
     "titulo": "Estruturas de Mercado",
     "q": "O que diferencia cartel de fusão?",
-    "r": "No cartel as empresas permanecem separadas; na fusão elas se unem juridicamente."
+    "r": "No cartel as empresas permanecem separadas; na fusão elas se unem juridicamente.",
+    "d": "A fusão é uma operação societária sujeita à análise concorrencial quando atende aos critérios legais. O cartel é uma coordenação clandestina entre concorrentes que deveriam decidir de forma independente.",
+    "fontes": [
+      "cade",
+      "cade_simples"
+    ]
   },
   {
     "aula": 3,
     "titulo": "Estruturas de Mercado",
     "q": "O que caracteriza a concorrência monopolista?",
-    "r": "Muitas empresas vendem produtos diferenciados e possuem algum poder de preço."
+    "r": "Muitas empresas vendem produtos diferenciados e possuem algum poder de preço.",
+    "d": "Cada empresa tenta diferenciar sua oferta por atributos reais ou percebidos. No longo prazo, a entrada de concorrentes tende a reduzir lucros acima do normal, embora a diferenciação permaneça.",
+    "fontes": [
+      "openstax_market",
+      "cade_simples"
+    ]
   },
   {
     "aula": 3,
     "titulo": "Estruturas de Mercado",
     "q": "Como a diferenciação cria poder de mercado?",
-    "r": "Ao reduzir a substituição perfeita e aumentar preferência, lealdade ou percepção de valor."
+    "r": "Ao reduzir a substituição perfeita e aumentar preferência, lealdade ou percepção de valor.",
+    "d": "Marca, conveniência, qualidade e experiência reduzem a comparação baseada apenas em preço. Isso torna a demanda da empresa menos elástica, mas o poder é limitado pela existência de alternativas.",
+    "fontes": [
+      "cade",
+      "cade_simples"
+    ]
   },
   {
     "aula": 3,
     "titulo": "Estruturas de Mercado",
     "q": "Qual é o papel da propaganda na concorrência monopolista?",
-    "r": "Destacar diferenças, construir marca e reduzir a sensibilidade do consumidor ao preço."
+    "r": "Destacar diferenças, construir marca e reduzir a sensibilidade do consumidor ao preço.",
+    "d": "A propaganda pode informar ou persuadir, reforçando diferenciação e reconhecimento. Seu retorno deve ser avaliado pelo efeito sobre aquisição, retenção, margem e valor da marca.",
+    "fontes": [
+      "openstax_market",
+      "cade_simples"
+    ]
   },
   {
     "aula": 3,
     "titulo": "Estruturas de Mercado",
     "q": "O que é produto homogêneo?",
-    "r": "Produto percebido como essencialmente igual ao dos concorrentes."
+    "r": "Produto percebido como essencialmente igual ao dos concorrentes.",
+    "d": "Quando compradores percebem produtos como equivalentes, a competição se concentra no preço e na eficiência. Commodities são o exemplo mais próximo, embora logística e qualidade ainda possam criar diferenças.",
+    "fontes": [
+      "openstax_market",
+      "cade_simples"
+    ]
   },
   {
     "aula": 3,
     "titulo": "Estruturas de Mercado",
     "q": "O que é produto diferenciado?",
-    "r": "Produto distinguido por marca, qualidade, design, localização, serviço ou atributos específicos."
+    "r": "Produto distinguido por marca, qualidade, design, localização, serviço ou atributos específicos.",
+    "d": "A diferenciação pode ser horizontal, quando depende de preferência, ou vertical, quando existe percepção de qualidade superior. Ela permite segmentação e propostas de valor distintas.",
+    "fontes": [
+      "openstax_market",
+      "cade_simples"
+    ]
   },
   {
     "aula": 3,
     "titulo": "Estruturas de Mercado",
     "q": "Por que a entrada de novas empresas reduz lucros extraordinários?",
-    "r": "Porque aumenta a oferta e a concorrência, pressionando preços e participação de mercado."
+    "r": "Porque aumenta a oferta e a concorrência, pressionando preços e participação de mercado.",
+    "d": "Lucros elevados atraem novos participantes e estimulam expansão dos concorrentes existentes. A maior oferta e o aumento das opções reduzem margens até um nível compatível com risco e custo de capital.",
+    "fontes": [
+      "openstax_market",
+      "cade_simples"
+    ]
   },
   {
     "aula": 3,
     "titulo": "Estruturas de Mercado",
     "q": "O que é poder de mercado?",
-    "r": "Capacidade de influenciar preço, quantidade ou condições de venda sem perder todos os clientes."
+    "r": "Capacidade de influenciar preço, quantidade ou condições de venda sem perder todos os clientes.",
+    "d": "Poder de mercado costuma ser avaliado com participação, barreiras, substituição e comportamento competitivo. Ter participação elevada não é automaticamente ilícito; o problema é o abuso desse poder.",
+    "fontes": [
+      "cade",
+      "cade_simples"
+    ]
   },
   {
     "aula": 3,
     "titulo": "Estruturas de Mercado",
     "q": "Como a regulação pode atuar em monopólios?",
-    "r": "Controlando tarifas, padrões de qualidade, acesso e práticas anticompetitivas."
+    "r": "Controlando tarifas, padrões de qualidade, acesso e práticas anticompetitivas.",
+    "d": "A regulação pode definir tetos tarifários, metas de eficiência, universalização e padrões mínimos. Uma regulação mal desenhada, porém, pode desestimular investimento ou proteger ineficiências.",
+    "fontes": [
+      "cade",
+      "cade_simples"
+    ]
   },
   {
     "aula": 3,
     "titulo": "Estruturas de Mercado",
     "q": "Por que analisar a estrutura de mercado é importante para a gestão?",
-    "r": "Ajuda a definir preços, investimentos, diferenciação, riscos competitivos e estratégia comercial."
+    "r": "Ajuda a definir preços, investimentos, diferenciação, riscos competitivos e estratégia comercial.",
+    "d": "A estrutura condiciona a estratégia possível: liderança em custos, diferenciação, nicho, cooperação ou expansão. Ela também ajuda a estimar reação dos rivais e riscos regulatórios.",
+    "fontes": [
+      "openstax_market",
+      "cade_simples"
+    ]
   },
   {
     "aula": 4,
     "titulo": "Economia Industrial e Competitiva",
     "q": "O que é economia industrial?",
-    "r": "Área que estuda empresas, setores, organização produtiva, concorrência, estratégia e desempenho dos mercados."
+    "r": "Área que estuda empresas, setores, organização produtiva, concorrência, estratégia e desempenho dos mercados.",
+    "d": "A economia industrial combina microeconomia, estratégia e análise institucional. Ela procura explicar por que setores apresentam diferentes níveis de concentração, inovação, produtividade e rentabilidade.",
+    "fontes": [
+      "ibge_industria",
+      "ibge_pia"
+    ]
   },
   {
     "aula": 4,
     "titulo": "Economia Industrial e Competitiva",
     "q": "Qual é a diferença entre empresa e indústria?",
-    "r": "Empresa é uma unidade produtiva individual; indústria é o conjunto de empresas de um setor ou atividade."
+    "r": "Empresa é uma unidade produtiva individual; indústria é o conjunto de empresas de um setor ou atividade.",
+    "d": "Uma indústria pode conter empresas de tamanhos e modelos de negócio distintos. A análise setorial observa relações entre essas empresas, fornecedores, clientes e instituições.",
+    "fontes": [
+      "ibge_industria",
+      "ibge_pia"
+    ]
   },
   {
     "aula": 4,
     "titulo": "Economia Industrial e Competitiva",
     "q": "Onde se concentrou o início da industrialização brasileira?",
-    "r": "Principalmente em São Paulo e no Rio de Janeiro."
+    "r": "Principalmente em São Paulo e no Rio de Janeiro.",
+    "d": "São Paulo ganhou destaque pela renda do café, mercado consumidor, ferrovias, imigração e disponibilidade de capital. Rio de Janeiro também concentrou infraestrutura, administração e atividades manufatureiras.",
+    "fontes": [
+      "ipea_industria",
+      "ibge_industria"
+    ]
   },
   {
     "aula": 4,
     "titulo": "Economia Industrial e Competitiva",
     "q": "Como imigrantes contribuíram para as primeiras fábricas?",
-    "r": "Trouxeram conhecimentos técnicos e ofícios ligados a tecidos, calçados e utensílios."
+    "r": "Trouxeram conhecimentos técnicos e ofícios ligados a tecidos, calçados e utensílios.",
+    "d": "Além de mão de obra, muitos imigrantes trouxeram conhecimento técnico, redes comerciais e experiência empresarial. Essas competências favoreceram oficinas e pequenas fábricas que posteriormente se expandiram.",
+    "fontes": [
+      "ipea_industria",
+      "ibge_industria"
+    ]
   },
   {
     "aula": 4,
     "titulo": "Economia Industrial e Competitiva",
     "q": "Qual foi a importância da Era Vargas para a indústria?",
-    "r": "Fortaleceu a política de substituição de importações e a formação de setores industriais nacionais."
+    "r": "Fortaleceu a política de substituição de importações e a formação de setores industriais nacionais.",
+    "d": "O período ampliou a intervenção estatal, a infraestrutura e a indústria de base. Empresas como a Companhia Siderúrgica Nacional simbolizam a tentativa de reduzir dependências e integrar a produção nacional.",
+    "fontes": [
+      "ipea_industria",
+      "ibge_industria"
+    ]
   },
   {
     "aula": 4,
     "titulo": "Economia Industrial e Competitiva",
     "q": "O que são economias de escala?",
-    "r": "Queda do custo médio à medida que a produção aumenta e custos são distribuídos por mais unidades."
+    "r": "Queda do custo médio à medida que a produção aumenta e custos são distribuídos por mais unidades.",
+    "d": "A escala surge quando custos fixos são diluídos, trabalhadores se especializam e equipamentos são utilizados com maior eficiência. Ela possui limites: complexidade e coordenação podem elevar custos em empresas grandes demais.",
+    "fontes": [
+      "ibge_industria",
+      "ibge_pia"
+    ]
   },
   {
     "aula": 4,
     "titulo": "Economia Industrial e Competitiva",
     "q": "O que são economias de escopo?",
-    "r": "Reduções de custo obtidas ao produzir diferentes produtos usando recursos, processos ou canais compartilhados."
+    "r": "Reduções de custo obtidas ao produzir diferentes produtos usando recursos, processos ou canais compartilhados.",
+    "d": "Uma empresa pode compartilhar marca, logística, tecnologia, equipe comercial ou matéria-prima entre linhas diferentes. O ganho ocorre quando produzir em conjunto custa menos do que produzir separadamente.",
+    "fontes": [
+      "ibge_industria",
+      "ibge_pia"
+    ]
   },
   {
     "aula": 4,
     "titulo": "Economia Industrial e Competitiva",
     "q": "O que é produtividade?",
-    "r": "Relação entre a quantidade produzida e os recursos utilizados."
+    "r": "Relação entre a quantidade produzida e os recursos utilizados.",
+    "d": "Produtividade não é simplesmente trabalhar mais, mas produzir mais valor com os mesmos recursos. Processos, capital, capacitação, gestão e tecnologia são determinantes importantes.",
+    "fontes": [
+      "ibge_industria",
+      "ibge_pia"
+    ]
   },
   {
     "aula": 4,
     "titulo": "Economia Industrial e Competitiva",
     "q": "Como tecnologia pode elevar competitividade?",
-    "r": "Reduz custos, melhora qualidade, aumenta velocidade, precisão e capacidade de inovação."
+    "r": "Reduz custos, melhora qualidade, aumenta velocidade, precisão e capacidade de inovação.",
+    "d": "A tecnologia pode automatizar tarefas, reduzir desperdícios e gerar dados para decisão. O ganho competitivo depende de integração com pessoas, processos e estratégia, não apenas da compra de equipamentos.",
+    "fontes": [
+      "ibge_industria",
+      "ibge_pia"
+    ]
   },
   {
     "aula": 4,
     "titulo": "Economia Industrial e Competitiva",
     "q": "Por que infraestrutura afeta a indústria?",
-    "r": "Transporte, energia e comunicação deficientes elevam custos e reduzem eficiência e alcance de mercado."
+    "r": "Transporte, energia e comunicação deficientes elevam custos e reduzem eficiência e alcance de mercado.",
+    "d": "Logística precária aumenta prazos e estoques; energia instável provoca paradas; conectividade limitada reduz coordenação. Esses custos sistêmicos afetam localização, preço final e capacidade de competir internacionalmente.",
+    "fontes": [
+      "ibge_industria",
+      "ibge_pia"
+    ]
   },
   {
     "aula": 4,
     "titulo": "Economia Industrial e Competitiva",
     "q": "O que é capacidade instalada?",
-    "r": "O volume máximo que uma unidade produtiva pode produzir em condições normais."
+    "r": "O volume máximo que uma unidade produtiva pode produzir em condições normais.",
+    "d": "A capacidade é estimada considerando máquinas, turnos, gargalos, manutenção e condições operacionais. Ela serve para planejar vendas, investimentos e necessidades de capital de giro.",
+    "fontes": [
+      "ibge_industria",
+      "ibge_pia"
+    ]
   },
   {
     "aula": 4,
     "titulo": "Economia Industrial e Competitiva",
     "q": "O que significa ociosidade industrial?",
-    "r": "Uso abaixo da capacidade instalada, com máquinas, instalações e mão de obra parcialmente paradas."
+    "r": "Uso abaixo da capacidade instalada, com máquinas, instalações e mão de obra parcialmente paradas.",
+    "d": "Ociosidade aumenta o custo fixo por unidade e pode sinalizar queda de demanda ou excesso de investimento. Alguma folga, contudo, pode ser necessária para manutenção e picos de produção.",
+    "fontes": [
+      "ibge_industria",
+      "ibge_pia"
+    ]
   },
   {
     "aula": 4,
     "titulo": "Economia Industrial e Competitiva",
     "q": "Por que investimento de longo prazo é essencial?",
-    "r": "Permite modernização, expansão, pesquisa, capacitação e ganhos sustentáveis de produtividade."
+    "r": "Permite modernização, expansão, pesquisa, capacitação e ganhos sustentáveis de produtividade.",
+    "d": "Investimentos industriais têm maturação longa e frequentemente são irreversíveis. Por isso, exigem projeções de demanda, análise de risco, financiamento adequado e acompanhamento de retorno.",
+    "fontes": [
+      "ibge_industria",
+      "ibge_pia"
+    ]
   },
   {
     "aula": 4,
     "titulo": "Economia Industrial e Competitiva",
     "q": "O que é vantagem competitiva?",
-    "r": "Condição que permite à empresa criar valor superior ou operar com custo menor que concorrentes."
+    "r": "Condição que permite à empresa criar valor superior ou operar com custo menor que concorrentes.",
+    "d": "A vantagem precisa ser valiosa, difícil de imitar e sustentada por capacidades organizacionais. Pode vir de custo, tecnologia, marca, dados, distribuição, serviço ou combinação desses fatores.",
+    "fontes": [
+      "ibge_industria",
+      "ibge_pia"
+    ]
   },
   {
     "aula": 4,
     "titulo": "Economia Industrial e Competitiva",
     "q": "Como inovação de processo difere de inovação de produto?",
-    "r": "A de processo melhora como se produz; a de produto cria ou aperfeiçoa o que é oferecido."
+    "r": "A de processo melhora como se produz; a de produto cria ou aperfeiçoa o que é oferecido.",
+    "d": "Uma nova máquina ou método pode reduzir tempo e defeitos sem alterar o produto final. Já a inovação de produto muda funcionalidades ou benefícios percebidos e pode abrir novos mercados.",
+    "fontes": [
+      "ibge_industria",
+      "ibge_pia"
+    ]
   },
   {
     "aula": 4,
     "titulo": "Economia Industrial e Competitiva",
     "q": "O que é cadeia produtiva?",
-    "r": "Conjunto de etapas e agentes que transformam insumos até o produto chegar ao consumidor."
+    "r": "Conjunto de etapas e agentes que transformam insumos até o produto chegar ao consumidor.",
+    "d": "A cadeia inclui fornecedores, transformação, logística, distribuição e pós-venda. Mapear dependências e margens em cada etapa ajuda a identificar riscos, gargalos e oportunidades de integração.",
+    "fontes": [
+      "ibge_industria",
+      "ibge_pia"
+    ]
   },
   {
     "aula": 4,
     "titulo": "Economia Industrial e Competitiva",
     "q": "Como a concorrência externa pode estimular a indústria nacional?",
-    "r": "Pressiona por produtividade, qualidade, inovação e redução de custos."
+    "r": "Pressiona por produtividade, qualidade, inovação e redução de custos.",
+    "d": "A competição externa revela referências de preço, qualidade e produtividade. Entretanto, a adaptação exige acesso a tecnologia, financiamento, infraestrutura e competências gerenciais.",
+    "fontes": [
+      "ibge_industria",
+      "ibge_pia"
+    ]
   },
   {
     "aula": 4,
     "titulo": "Economia Industrial e Competitiva",
     "q": "Qual risco existe na dependência de insumos importados?",
-    "r": "Exposição a câmbio, frete, crises internacionais, atrasos e interrupções de fornecimento."
+    "r": "Exposição a câmbio, frete, crises internacionais, atrasos e interrupções de fornecimento.",
+    "d": "Variações cambiais e interrupções logísticas podem elevar custos ou parar linhas inteiras. A mitigação inclui fornecedores alternativos, contratos, nacionalização e estoques de segurança calculados.",
+    "fontes": [
+      "ibge_industria",
+      "ibge_pia"
+    ]
   },
   {
     "aula": 4,
     "titulo": "Economia Industrial e Competitiva",
     "q": "Por que qualificação profissional é relevante para a indústria?",
-    "r": "Permite operar tecnologias, melhorar processos, reduzir erros e aumentar produtividade."
+    "r": "Permite operar tecnologias, melhorar processos, reduzir erros e aumentar produtividade.",
+    "d": "Tecnologias avançadas exigem capacidade de operação, manutenção e análise. Treinamento reduz falhas, melhora segurança e aumenta o retorno dos investimentos em automação.",
+    "fontes": [
+      "ibge_industria",
+      "ibge_pia"
+    ]
   },
   {
     "aula": 4,
     "titulo": "Economia Industrial e Competitiva",
     "q": "Como a gestão financeira apoia a competitividade industrial?",
-    "r": "Controla custos, margens, capital de giro, investimentos, riscos e retorno de projetos."
+    "r": "Controla custos, margens, capital de giro, investimentos, riscos e retorno de projetos.",
+    "d": "A gestão financeira transforma estratégia industrial em orçamento, fluxo de caixa e critérios de investimento. Também mede custo total, ponto de equilíbrio, rentabilidade por produto e exposição a riscos.",
+    "fontes": [
+      "ibge_industria",
+      "ibge_pia"
+    ]
   },
   {
     "aula": 5,
     "titulo": "Política Econômica",
     "q": "Qual é o papel econômico do setor público?",
-    "r": "Fornecer bens públicos, regular mercados, redistribuir renda, estabilizar a economia e corrigir falhas de mercado."
+    "r": "Fornecer bens públicos, regular mercados, redistribuir renda, estabilizar a economia e corrigir falhas de mercado.",
+    "d": "Além de produzir serviços, o Estado define regras e redistribui recursos por tributos e transferências. A intervenção deve comparar benefícios sociais, custos fiscais e possíveis falhas do próprio governo.",
+    "fontes": [
+      "bcb_monetaria",
+      "openstax_macro"
+    ]
   },
   {
     "aula": 5,
     "titulo": "Política Econômica",
     "q": "O que é política fiscal?",
-    "r": "Uso de gastos públicos, tributos e endividamento para influenciar atividade econômica e contas públicas."
+    "r": "Uso de gastos públicos, tributos e endividamento para influenciar atividade econômica e contas públicas.",
+    "d": "A política fiscal afeta a demanda agregada, a distribuição de renda e a trajetória da dívida. Seus efeitos dependem do momento do ciclo, da composição do gasto e de como as medidas são financiadas.",
+    "fontes": [
+      "tesouro_fiscal",
+      "openstax_macro"
+    ]
   },
   {
     "aula": 5,
     "titulo": "Política Econômica",
     "q": "O que é política monetária?",
-    "r": "Ações sobre moeda, crédito e juros para controlar inflação e atividade econômica."
+    "r": "Ações sobre moeda, crédito e juros para controlar inflação e atividade econômica.",
+    "d": "No Brasil, a Selic é o principal instrumento operacional da política monetária. Mudanças nos juros se transmitem ao crédito, câmbio, preços de ativos, expectativas, consumo e investimento.",
+    "fontes": [
+      "bcb_monetaria",
+      "bcb_transmissao"
+    ]
   },
   {
     "aula": 5,
     "titulo": "Política Econômica",
     "q": "O que é política cambial?",
-    "r": "Medidas relacionadas ao valor da moeda nacional e ao funcionamento do mercado de câmbio."
+    "r": "Medidas relacionadas ao valor da moeda nacional e ao funcionamento do mercado de câmbio.",
+    "d": "O regime cambial pode ser fixo, flutuante ou administrado. Intervenções podem suavizar disfunções, mas não eliminam permanentemente forças de oferta e demanda por moeda estrangeira.",
+    "fontes": [
+      "bcb_monetaria",
+      "openstax_macro"
+    ]
   },
   {
     "aula": 5,
     "titulo": "Política Econômica",
     "q": "O que é política de rendas?",
-    "r": "Medidas que afetam salários, preços e outras rendas para influenciar inflação e distribuição."
+    "r": "Medidas que afetam salários, preços e outras rendas para influenciar inflação e distribuição.",
+    "d": "Ela pode incluir regras salariais, reajustes administrados e acordos de preços. Seu uso exige cautela porque controles artificiais podem gerar distorções e não substituem políticas fiscal e monetária consistentes.",
+    "fontes": [
+      "bcb_monetaria",
+      "openstax_macro"
+    ]
   },
   {
     "aula": 5,
     "titulo": "Política Econômica",
     "q": "Como uma alta da Selic pode afetar empresas?",
-    "r": "Eleva o custo do crédito, reduz consumo e investimento e pode exigir revisão de estratégias."
+    "r": "Eleva o custo do crédito, reduz consumo e investimento e pode exigir revisão de estratégias.",
+    "d": "O custo de capital e das dívidas indexadas tende a aumentar, enquanto projetos com retorno baixo perdem atratividade. Empresas também podem enfrentar queda de vendas financiadas e maior inadimplência.",
+    "fontes": [
+      "bcb_monetaria",
+      "bcb_transmissao"
+    ]
   },
   {
     "aula": 5,
     "titulo": "Política Econômica",
     "q": "O que caracteriza uma política fiscal expansionista?",
-    "r": "Aumento de gastos ou redução de tributos para estimular demanda, produção e emprego."
+    "r": "Aumento de gastos ou redução de tributos para estimular demanda, produção e emprego.",
+    "d": "O estímulo pode elevar produção quando há capacidade ociosa, mas também pressionar inflação, juros ou dívida. O multiplicador fiscal varia conforme confiança, abertura econômica e reação da política monetária.",
+    "fontes": [
+      "tesouro_fiscal",
+      "openstax_macro"
+    ]
   },
   {
     "aula": 5,
     "titulo": "Política Econômica",
     "q": "O que caracteriza uma política fiscal contracionista?",
-    "r": "Redução de gastos ou aumento de tributos para conter demanda e melhorar o resultado fiscal."
+    "r": "Redução de gastos ou aumento de tributos para conter demanda e melhorar o resultado fiscal.",
+    "d": "A contração pode ajudar a estabilizar dívida e inflação, porém reduz demanda no curto prazo. O desenho deve considerar efeitos distributivos e evitar cortes que prejudiquem capacidade produtiva futura.",
+    "fontes": [
+      "tesouro_fiscal",
+      "openstax_macro"
+    ]
   },
   {
     "aula": 5,
     "titulo": "Política Econômica",
     "q": "Como a política monetária expansionista atua?",
-    "r": "Reduz juros ou amplia liquidez e crédito para estimular consumo e investimento."
+    "r": "Reduz juros ou amplia liquidez e crédito para estimular consumo e investimento.",
+    "d": "Crédito mais barato e maior liquidez tendem a elevar demanda agregada. Se a economia já estiver perto do limite de capacidade, o efeito adicional pode aparecer mais em preços do que em produção.",
+    "fontes": [
+      "bcb_monetaria",
+      "bcb_transmissao"
+    ]
   },
   {
     "aula": 5,
     "titulo": "Política Econômica",
     "q": "Como a política monetária contracionista atua?",
-    "r": "Eleva juros ou restringe moeda e crédito para reduzir pressões inflacionárias."
+    "r": "Eleva juros ou restringe moeda e crédito para reduzir pressões inflacionárias.",
+    "d": "A restrição monetária busca moderar a demanda e ancorar expectativas. O efeito não é imediato: os canais de transmissão operam com defasagens e atingem setores de forma desigual.",
+    "fontes": [
+      "bcb_monetaria",
+      "bcb_transmissao"
+    ]
   },
   {
     "aula": 5,
     "titulo": "Política Econômica",
     "q": "Como a desvalorização cambial afeta importações?",
-    "r": "Torna produtos e insumos importados mais caros em moeda nacional."
+    "r": "Torna produtos e insumos importados mais caros em moeda nacional.",
+    "d": "Empresas importadoras enfrentam aumento do custo em reais, inclusive de máquinas e componentes. O repasse ao preço depende de contratos, concorrência, estoques e margem disponível.",
+    "fontes": [
+      "bcb_monetaria",
+      "openstax_macro"
+    ]
   },
   {
     "aula": 5,
     "titulo": "Política Econômica",
     "q": "Como a desvalorização cambial pode favorecer exportações?",
-    "r": "Pode tornar produtos nacionais mais baratos para compradores estrangeiros e elevar receitas em reais."
+    "r": "Pode tornar produtos nacionais mais baratos para compradores estrangeiros e elevar receitas em reais.",
+    "d": "Exportadores recebem moeda estrangeira e podem obter mais reais por unidade vendida. O ganho não é automático se houver insumos importados, contratos fixos ou baixa capacidade de aumentar produção.",
+    "fontes": [
+      "bcb_monetaria",
+      "openstax_macro"
+    ]
   },
   {
     "aula": 5,
     "titulo": "Política Econômica",
     "q": "O que é falha de mercado?",
-    "r": "Situação em que o mercado não aloca recursos de forma eficiente ou socialmente desejável."
+    "r": "Situação em que o mercado não aloca recursos de forma eficiente ou socialmente desejável.",
+    "d": "Exemplos incluem poder de mercado, externalidades, bens públicos e informação assimétrica. A correção adequada pode envolver regulação, tributos, subsídios, provisão pública ou melhor definição de direitos.",
+    "fontes": [
+      "openstax_micro",
+      "cade"
+    ]
   },
   {
     "aula": 5,
     "titulo": "Política Econômica",
     "q": "O que são externalidades?",
-    "r": "Efeitos de uma atividade sobre terceiros que não são totalmente refletidos nos preços."
+    "r": "Efeitos de uma atividade sobre terceiros que não são totalmente refletidos nos preços.",
+    "d": "Poluição é uma externalidade negativa; vacinação pode gerar externalidade positiva. Como o agente não considera integralmente o efeito social, a quantidade produzida ou consumida pode ficar distante do nível eficiente.",
+    "fontes": [
+      "openstax_micro",
+      "cade"
+    ]
   },
   {
     "aula": 5,
     "titulo": "Política Econômica",
     "q": "O que são bens públicos?",
-    "r": "Bens de uso coletivo, geralmente não rivais e de difícil exclusão, como defesa e iluminação pública."
+    "r": "Bens de uso coletivo, geralmente não rivais e de difícil exclusão, como defesa e iluminação pública.",
+    "d": "Não rivalidade significa que o uso por uma pessoa não reduz o uso por outra; não exclusão torna difícil impedir quem não pagou. Essas características criam o problema do carona e dificultam financiamento puramente privado.",
+    "fontes": [
+      "openstax_micro",
+      "cade"
+    ]
   },
   {
     "aula": 5,
     "titulo": "Política Econômica",
     "q": "Por que existe regulação econômica?",
-    "r": "Para proteger consumidores, limitar abusos, garantir padrões e corrigir falhas de mercado."
+    "r": "Para proteger consumidores, limitar abusos, garantir padrões e corrigir falhas de mercado.",
+    "d": "A regulação pode definir padrões, exigir transparência e preservar concorrência. Para ser eficaz, precisa de objetivos claros, fiscalização, proporcionalidade e avaliação dos efeitos sobre inovação e investimento.",
+    "fontes": [
+      "openstax_micro",
+      "cade"
+    ]
   },
   {
     "aula": 5,
     "titulo": "Política Econômica",
     "q": "Como tributos afetam decisões empresariais?",
-    "r": "Alteram preços, custos, fluxo de caixa, investimento, localização e competitividade."
+    "r": "Alteram preços, custos, fluxo de caixa, investimento, localização e competitividade.",
+    "d": "Além da carga nominal, importam base, créditos, cumulatividade, prazo e custo de conformidade. Alterações tributárias podem mudar preços relativos e tornar projetos antes rentáveis economicamente inviáveis.",
+    "fontes": [
+      "tesouro_fiscal",
+      "openstax_macro"
+    ]
   },
   {
     "aula": 5,
     "titulo": "Política Econômica",
     "q": "O que é déficit público?",
-    "r": "Situação em que as despesas do governo superam suas receitas em determinado período."
+    "r": "Situação em que as despesas do governo superam suas receitas em determinado período.",
+    "d": "É importante distinguir déficit primário de déficit nominal, que inclui juros. Déficits recorrentes podem elevar dívida e custo de financiamento, mas seu impacto depende do ciclo e da credibilidade fiscal.",
+    "fontes": [
+      "tesouro_fiscal",
+      "openstax_macro"
+    ]
   },
   {
     "aula": 5,
     "titulo": "Política Econômica",
     "q": "Por que previsibilidade regulatória é importante?",
-    "r": "Reduz incerteza e melhora o planejamento de investimentos e contratos."
+    "r": "Reduz incerteza e melhora o planejamento de investimentos e contratos.",
+    "d": "Regras estáveis reduzem o prêmio de risco e permitem projeções de longo prazo. Mudanças frequentes ou retroativas elevam custo jurídico, adiam investimentos e encurtam horizontes de planejamento.",
+    "fontes": [
+      "bcb_monetaria",
+      "openstax_macro"
+    ]
   },
   {
     "aula": 5,
     "titulo": "Política Econômica",
     "q": "Como políticas econômicas influenciam a gestão financeira?",
-    "r": "Afetam juros, inflação, câmbio, demanda, custos, crédito e retorno dos investimentos."
+    "r": "Afetam juros, inflação, câmbio, demanda, custos, crédito e retorno dos investimentos.",
+    "d": "A gestão deve traduzir cenários macroeconômicos em premissas de receita, custo e financiamento. Sensibilidades e testes de estresse ajudam a medir quanto o caixa e o valor dos projetos mudam em cada cenário.",
+    "fontes": [
+      "bcb_monetaria",
+      "openstax_macro"
+    ]
   },
   {
     "aula": 6,
     "titulo": "Conceitos Macroeconômicos",
     "q": "O que são indicadores econômicos?",
-    "r": "Medidas que sintetizam aspectos da economia e ajudam a avaliar passado, presente e tendências."
+    "r": "Medidas que sintetizam aspectos da economia e ajudam a avaliar passado, presente e tendências.",
+    "d": "Um indicador simplifica uma dimensão complexa e precisa ser interpretado com metodologia, período e base de comparação. Nenhum dado isolado descreve toda a economia.",
+    "fontes": [
+      "ibge_indicadores",
+      "openstax_macro"
+    ]
   },
   {
     "aula": 6,
     "titulo": "Conceitos Macroeconômicos",
     "q": "Por que empresas acompanham indicadores externos?",
-    "r": "Para ajustar preços, estoques, crédito, investimentos, metas e estratégias diante do ambiente econômico."
+    "r": "Para ajustar preços, estoques, crédito, investimentos, metas e estratégias diante do ambiente econômico.",
+    "d": "Indicadores ajudam a antecipar demanda e custos e a comparar o desempenho da empresa com o ambiente. A utilidade aumenta quando são ligados a gatilhos de decisão previamente definidos.",
+    "fontes": [
+      "ibge_indicadores",
+      "openstax_macro"
+    ]
   },
   {
     "aula": 6,
     "titulo": "Conceitos Macroeconômicos",
     "q": "O que mede o PIB?",
-    "r": "O valor dos bens e serviços finais produzidos em uma economia durante determinado período."
+    "r": "O valor dos bens e serviços finais produzidos em uma economia durante determinado período.",
+    "d": "O PIB pode ser calculado pelas óticas da produção, renda ou despesa, que devem ser consistentes entre si. Apenas bens e serviços finais entram diretamente para evitar dupla contagem.",
+    "fontes": [
+      "ibge_indicadores",
+      "openstax_macro"
+    ]
   },
   {
     "aula": 6,
     "titulo": "Conceitos Macroeconômicos",
     "q": "Qual é a diferença entre PIB nominal e PIB real?",
-    "r": "O nominal usa preços correntes; o real desconta o efeito da inflação."
+    "r": "O nominal usa preços correntes; o real desconta o efeito da inflação.",
+    "d": "O PIB real usa preços de um período de referência ou índices encadeados para medir volume. Comparar apenas valores nominais pode confundir crescimento de produção com aumento de preços.",
+    "fontes": [
+      "ibge_indicadores",
+      "openstax_macro"
+    ]
   },
   {
     "aula": 6,
     "titulo": "Conceitos Macroeconômicos",
     "q": "O que o PIB per capita representa?",
-    "r": "O PIB dividido pela população, usado como aproximação da produção ou renda média por habitante."
+    "r": "O PIB dividido pela população, usado como aproximação da produção ou renda média por habitante.",
+    "d": "É uma média e não mostra distribuição de renda, trabalho não remunerado, qualidade ambiental ou bem-estar. Serve para comparação agregada, mas deve ser combinado com outros indicadores sociais.",
+    "fontes": [
+      "ibge_indicadores",
+      "openstax_macro"
+    ]
   },
   {
     "aula": 6,
     "titulo": "Conceitos Macroeconômicos",
     "q": "O que mede o IPCA?",
-    "r": "A variação média de preços de uma cesta de consumo das famílias abrangidas pelo índice."
+    "r": "A variação média de preços de uma cesta de consumo das famílias abrangidas pelo índice.",
+    "d": "O IPCA acompanha preços pagos por famílias dentro da população e áreas definidas pela metodologia do IBGE. Pesos diferentes na cesta fazem com que a inflação percebida por cada pessoa possa divergir do índice médio.",
+    "fontes": [
+      "ibge_indicadores",
+      "openstax_macro"
+    ]
   },
   {
     "aula": 6,
     "titulo": "Conceitos Macroeconômicos",
     "q": "Por que inflação alta dificulta o planejamento?",
-    "r": "Aumenta incerteza sobre custos, preços, margens, contratos e poder de compra."
+    "r": "Aumenta incerteza sobre custos, preços, margens, contratos e poder de compra.",
+    "d": "A volatilidade encurta contratos e dificulta separar aumento real de aumento nominal. Empresas precisam atualizar premissas, proteger capital de giro e negociar mecanismos de reajuste coerentes.",
+    "fontes": [
+      "openstax_macro",
+      "ibge_indicadores"
+    ]
   },
   {
     "aula": 6,
     "titulo": "Conceitos Macroeconômicos",
     "q": "O que é taxa de desemprego?",
-    "r": "Proporção da força de trabalho que procura emprego e não encontra."
+    "r": "Proporção da força de trabalho que procura emprego e não encontra.",
+    "d": "A taxa considera pessoas desocupadas que estão disponíveis e procurando trabalho dentro da força de trabalho. Quem não busca emprego não entra automaticamente no numerador, por isso outros indicadores também são necessários.",
+    "fontes": [
+      "ibge_pnad",
+      "ibge_indicadores"
+    ]
   },
   {
     "aula": 6,
     "titulo": "Conceitos Macroeconômicos",
     "q": "O que a taxa Selic sinaliza?",
-    "r": "O nível básico de juros da economia e a orientação da política monetária."
+    "r": "O nível básico de juros da economia e a orientação da política monetária.",
+    "d": "A Selic influencia financiamento, aplicações e taxa de desconto, mas as taxas finais também incorporam risco, prazo, custos e concorrência bancária. Ela é um sinal central das condições monetárias.",
+    "fontes": [
+      "bcb_selic",
+      "bcb_transmissao"
+    ]
   },
   {
     "aula": 6,
     "titulo": "Conceitos Macroeconômicos",
     "q": "Como juros altos afetam o valor presente de projetos?",
-    "r": "Aumentam a taxa de desconto e tendem a reduzir o valor presente dos fluxos futuros."
+    "r": "Aumentam a taxa de desconto e tendem a reduzir o valor presente dos fluxos futuros.",
+    "d": "Fluxos mais distantes perdem mais valor quando a taxa de desconto sobe. Isso afeta especialmente projetos longos e empresas cujo valor depende de resultados esperados muitos anos à frente.",
+    "fontes": [
+      "bcb_selic",
+      "bcb_transmissao"
+    ]
   },
   {
     "aula": 6,
     "titulo": "Conceitos Macroeconômicos",
     "q": "O que é taxa de câmbio?",
-    "r": "Preço de uma moeda em relação a outra."
+    "r": "Preço de uma moeda em relação a outra.",
+    "d": "A cotação pode ser apresentada como reais por unidade de moeda estrangeira. Ela varia com comércio, fluxos financeiros, juros, risco e expectativas, afetando preços e competitividade.",
+    "fontes": [
+      "openstax_macro",
+      "ibge_indicadores"
+    ]
   },
   {
     "aula": 6,
     "titulo": "Conceitos Macroeconômicos",
     "q": "O que é balança comercial?",
-    "r": "Diferença entre exportações e importações de bens."
+    "r": "Diferença entre exportações e importações de bens.",
+    "d": "O saldo de bens é apenas uma parte das transações externas; serviços, rendas e transferências aparecem em outras contas. Mesmo assim, a balança comercial é relevante para geração de divisas.",
+    "fontes": [
+      "openstax_macro",
+      "ibge_indicadores"
+    ]
   },
   {
     "aula": 6,
     "titulo": "Conceitos Macroeconômicos",
     "q": "O que significa superávit comercial?",
-    "r": "Exportações superiores às importações."
+    "r": "Exportações superiores às importações.",
+    "d": "O superávit gera entrada líquida de divisas pelo comércio de bens naquele período. Ele pode refletir exportações fortes, importações fracas ou combinação dos dois, portanto exige análise do contexto.",
+    "fontes": [
+      "openstax_macro",
+      "ibge_indicadores"
+    ]
   },
   {
     "aula": 6,
     "titulo": "Conceitos Macroeconômicos",
     "q": "O que significa déficit comercial?",
-    "r": "Importações superiores às exportações."
+    "r": "Importações superiores às exportações.",
+    "d": "O déficit não é necessariamente negativo: pode acompanhar investimento e crescimento das importações. O risco aumenta quando é persistente e não existe financiamento externo sustentável.",
+    "fontes": [
+      "openstax_macro",
+      "ibge_indicadores"
+    ]
   },
   {
     "aula": 6,
     "titulo": "Conceitos Macroeconômicos",
     "q": "O que é rating soberano?",
-    "r": "Avaliação da capacidade e disposição de um país pagar suas obrigações."
+    "r": "Avaliação da capacidade e disposição de um país pagar suas obrigações.",
+    "d": "Agências analisam instituições, crescimento, dívida, resultado fiscal, reservas e riscos políticos. O rating resume risco de crédito, mas não elimina a necessidade de análise própria.",
+    "fontes": [
+      "openstax_macro",
+      "ibge_indicadores"
+    ]
   },
   {
     "aula": 6,
     "titulo": "Conceitos Macroeconômicos",
     "q": "Como um rebaixamento de rating pode afetar empresas?",
-    "r": "Pode elevar juros, reduzir investimentos e encarecer captação externa e interna."
+    "r": "Pode elevar juros, reduzir investimentos e encarecer captação externa e interna.",
+    "d": "O rebaixamento pode elevar o prêmio exigido de títulos públicos e privados. Empresas sofrem por comparação de risco, custo bancário, câmbio e menor disponibilidade de capital internacional.",
+    "fontes": [
+      "openstax_macro",
+      "ibge_indicadores"
+    ]
   },
   {
     "aula": 6,
     "titulo": "Conceitos Macroeconômicos",
     "q": "O que são indicadores antecedentes?",
-    "r": "Indicadores que costumam mudar antes da atividade econômica e ajudam a antecipar tendências."
+    "r": "Indicadores que costumam mudar antes da atividade econômica e ajudam a antecipar tendências.",
+    "d": "Exemplos incluem expectativas, novos pedidos e condições financeiras. Eles não preveem perfeitamente o futuro, mas podem sinalizar mudança antes de dados de produção e emprego.",
+    "fontes": [
+      "ibge_indicadores",
+      "openstax_macro"
+    ]
   },
   {
     "aula": 6,
     "titulo": "Conceitos Macroeconômicos",
     "q": "O que são indicadores coincidentes?",
-    "r": "Indicadores que se movem aproximadamente junto com a atividade econômica atual."
+    "r": "Indicadores que se movem aproximadamente junto com a atividade econômica atual.",
+    "d": "Produção, vendas e renda corrente costumam acompanhar o ciclo. Eles ajudam a confirmar o estado atual, embora revisões estatísticas possam alterar a leitura inicial.",
+    "fontes": [
+      "ibge_indicadores",
+      "openstax_macro"
+    ]
   },
   {
     "aula": 6,
     "titulo": "Conceitos Macroeconômicos",
     "q": "O que são indicadores defasados?",
-    "r": "Indicadores que confirmam movimentos depois que mudanças econômicas já ocorreram."
+    "r": "Indicadores que confirmam movimentos depois que mudanças econômicas já ocorreram.",
+    "d": "Desemprego e inadimplência podem reagir depois da produção porque contratos e decisões demoram a se ajustar. Esses indicadores são úteis para confirmar a intensidade e persistência de uma mudança.",
+    "fontes": [
+      "ibge_indicadores",
+      "openstax_macro"
+    ]
   },
   {
     "aula": 6,
     "titulo": "Conceitos Macroeconômicos",
     "q": "Como combinar indicadores melhora decisões?",
-    "r": "Reduz o risco de interpretar um único dado fora de contexto e oferece visão mais completa do cenário."
+    "r": "Reduz o risco de interpretar um único dado fora de contexto e oferece visão mais completa do cenário.",
+    "d": "A combinação deve considerar relações causais, defasagens e possíveis sinais contraditórios. Painéis com indicadores antecedentes, coincidentes e defasados reduzem decisões baseadas em ruído.",
+    "fontes": [
+      "ibge_indicadores",
+      "openstax_macro"
+    ]
   }
 ];
+
+const flashcardSources = {
+  "openstax_intro": {
+    "title": "OpenStax — Principles of Economics 3e",
+    "url": "https://openstax.org/books/principles-economics-3e/pages/1-introduction"
+  },
+  "openstax_demand": {
+    "title": "OpenStax — Demand, Supply and Equilibrium",
+    "url": "https://openstax.org/books/principles-economics-3e/pages/3-1-demand-supply-and-equilibrium-in-markets-for-goods-and-services"
+  },
+  "openstax_micro": {
+    "title": "OpenStax — Principles of Microeconomics 3e",
+    "url": "https://openstax.org/books/principles-microeconomics-3e/pages/index"
+  },
+  "openstax_market": {
+    "title": "OpenStax — Monopolistic Competition and Oligopoly",
+    "url": "https://openstax.org/books/principles-microeconomics-3e/pages/10-introduction-to-monopolistic-competition-and-oligopoly"
+  },
+  "cade": {
+    "title": "CADE — Defesa da concorrência",
+    "url": "https://www.gov.br/cade/pt-br/acesso-a-informacao/perguntas-frequentes/perguntas-sobre-defesa-da-concorrencia"
+  },
+  "cade_simples": {
+    "title": "CADE Simples — conceitos concorrenciais",
+    "url": "https://www.gov.br/cade/pt-br/centrais-de-conteudo/cade-simples"
+  },
+  "ipea_real": {
+    "title": "Ipea — Plano Real e a estabilização da inflação",
+    "url": "https://www.ipea.gov.br/desafios/index.php?Itemid=34&catid=29&id=3055&option=com_content&view=article"
+  },
+  "ipea_industria": {
+    "title": "Ipea — Substituição de importações e industrialização",
+    "url": "https://repositorio.ipea.gov.br/bitstreams/29ff0613-9bb8-44d1-ba33-41deddb32099/download"
+  },
+  "ibge_industria": {
+    "title": "IBGE — Indústria e Construção",
+    "url": "https://www.ibge.gov.br/estatisticas/economicas/industria.html"
+  },
+  "ibge_pia": {
+    "title": "IBGE — Pesquisa Industrial Anual",
+    "url": "https://www.ibge.gov.br/estatisticas/economicas/industria/9042-pesquisa-industrial-anual.html"
+  },
+  "bcb_monetaria": {
+    "title": "Banco Central — Política monetária",
+    "url": "https://www.bcb.gov.br/controleinflacao"
+  },
+  "bcb_transmissao": {
+    "title": "Banco Central — Transmissão da política monetária",
+    "url": "https://www.bcb.gov.br/controleinflacao/transmissaopoliticamonetaria"
+  },
+  "bcb_selic": {
+    "title": "Banco Central — Taxa Selic",
+    "url": "https://www.bcb.gov.br/controleinflacao/taxaselic"
+  },
+  "tesouro_fiscal": {
+    "title": "Tesouro Nacional — Política fiscal",
+    "url": "https://www.gov.br/tesouronacional/pt-br/estatisticas-fiscais-e-planejamento/sobre-politica-fiscal"
+  },
+  "ibge_indicadores": {
+    "title": "IBGE — Painel de Indicadores",
+    "url": "https://www.ibge.gov.br/indicadores"
+  },
+  "ibge_pnad": {
+    "title": "IBGE — PNAD Contínua",
+    "url": "https://www.ibge.gov.br/estatisticas/sociais/trabalho/17270-pnad-continua.html"
+  },
+  "openstax_macro": {
+    "title": "OpenStax — Principles of Macroeconomics 3e",
+    "url": "https://openstax.org/books/principles-macroeconomics-3e/pages/index"
+  }
+};
 
 const flashcardsModal = document.getElementById('flashcards-modal');
 const openFlashcardsButton = document.getElementById('open-flashcards');
@@ -998,6 +1655,8 @@ const closeFlashcardsButton = document.getElementById('close-flashcards');
 const flashcardElement = document.getElementById('flashcard');
 const flashcardQuestion = document.getElementById('flashcard-question');
 const flashcardAnswer = document.getElementById('flashcard-answer');
+const flashcardDetail = document.getElementById('flashcard-detail');
+const flashcardSourcesFooter = document.getElementById('flashcard-sources');
 const flashcardCounter = document.getElementById('flashcard-counter');
 const flashcardAulaLabel = document.getElementById('flashcard-aula-label');
 const flashcardAulaSelect = document.getElementById('flashcard-aula');
@@ -1014,6 +1673,24 @@ function renderFlashcard() {
   flashcardElement.classList.remove('is-flipped');
   flashcardQuestion.textContent = item.q;
   flashcardAnswer.textContent = item.r;
+  flashcardDetail.textContent = item.d || '';
+  flashcardSourcesFooter.replaceChildren();
+  const sourceLabel = document.createElement('span');
+  sourceLabel.textContent = 'Fontes complementares:';
+  flashcardSourcesFooter.appendChild(sourceLabel);
+  (item.fontes || []).forEach((sourceId, sourceIndex) => {
+    const source = flashcardSources[sourceId];
+    if (!source) return;
+    const link = document.createElement('a');
+    link.href = source.url;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = source.title;
+    flashcardSourcesFooter.appendChild(link);
+    if (sourceIndex < item.fontes.length - 1) {
+      flashcardSourcesFooter.appendChild(document.createTextNode(' · '));
+    }
+  });
   flashcardCounter.textContent = `${flashcardIndex + 1} de ${activeFlashcards.length}`;
   flashcardAulaLabel.textContent = item.titulo;
   flipFlashcardButton.textContent = 'Ver resposta';
@@ -1026,7 +1703,7 @@ function toggleFlashcard() {
   const flipped = flashcardElement.classList.toggle('is-flipped');
   flipFlashcardButton.textContent = flipped ? 'Ver pergunta' : 'Ver resposta';
   if (typeof flashcardAudioEnabled !== 'undefined' && flashcardAudioEnabled) {
-    speakText(flipped ? `Resposta. ${activeFlashcards[flashcardIndex].r}` : `Pergunta. ${activeFlashcards[flashcardIndex].q}`);
+    speakText(flipped ? `Resposta. ${activeFlashcards[flashcardIndex].r} ${activeFlashcards[flashcardIndex].d || ''}` : `Pergunta. ${activeFlashcards[flashcardIndex].q}`);
   }
 }
 
@@ -1051,7 +1728,16 @@ function closeFlashcards() {
 
 openFlashcardsButton?.addEventListener('click', openFlashcards);
 closeFlashcardsButton?.addEventListener('click', closeFlashcards);
-flashcardElement?.addEventListener('click', toggleFlashcard);
+flashcardElement?.addEventListener('click', event => {
+  if (event.target.closest('.flashcard-sources a')) return;
+  toggleFlashcard();
+});
+flashcardElement?.addEventListener('keydown', event => {
+  if (event.key !== 'Enter' && event.key !== ' ') return;
+  if (event.target.closest('.flashcard-sources a')) return;
+  event.preventDefault();
+  toggleFlashcard();
+});
 flipFlashcardButton?.addEventListener('click', toggleFlashcard);
 previousFlashcardButton?.addEventListener('click', () => moveFlashcard(-1));
 nextFlashcardButton?.addEventListener('click', () => moveFlashcard(1));

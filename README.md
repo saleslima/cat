@@ -1,6 +1,6 @@
-# S$S — PWA de Análise Econômica
+# S&S — PWA de Análise Econômica
 
-Aplicativo web progressivo com 6 PDFs, 40 questões, gabarito, correção apenas após todas as respostas, explicações de erros, modo neon/dia e botão de instalação.
+Aplicativo web progressivo com simulado de 40 questões e 120 flashcards. Os flashcards apresentam respostas aprofundadas, contexto adicional e fontes complementares clicáveis no rodapé.
 
 ## Publicar no GitHub Pages
 1. Crie um repositório no GitHub.
@@ -9,4 +9,4 @@ Aplicativo web progressivo com 6 PDFs, 40 questões, gabarito, correção apenas
 4. Selecione a branch `main` e a pasta `/root`.
 5. Abra o endereço HTTPS fornecido pelo GitHub Pages.
 
-O botão de instalação só funciona em HTTPS ou em `localhost`. Em iPhone/iPad, a instalação é feita por **Compartilhar → Adicionar à Tela de Início**.
+O botão de instalação funciona em HTTPS ou em `localhost`. Em iPhone/iPad, use **Compartilhar → Adicionar à Tela de Início**.
