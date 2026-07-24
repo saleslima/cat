@@ -60,6 +60,7 @@ const resetButton = document.getElementById("reset-quiz");
 const resultPanel = document.getElementById("result-panel");
 const toast = document.getElementById("toast");
 let corrected = false;
+const batchCorrectedIndexes = new Set();
 
 function renderQuiz() {
   quizContainer.innerHTML = questions.map((item, index) => `
@@ -90,11 +91,56 @@ function updateProgress() {
   progressBar.style.width = `${(total / questions.length) * 100}%`;
 }
 
+function correctQuestion(index) {
+  if (batchCorrectedIndexes.has(index)) return;
+
+  const item = questions[index];
+  const selectedInput = quizForm.querySelector(`input[name="q${index}"]:checked`);
+  if (!selectedInput) return;
+
+  const selected = Number(selectedInput.value);
+  const card = document.getElementById(`question-${index + 1}`);
+  const labels = card.querySelectorAll(".option");
+  const feedback = card.querySelector(".feedback-line");
+
+  card.classList.remove("unanswered");
+  labels[item.a].classList.add("is-correct-answer");
+
+  if (selected === item.a) {
+    card.classList.add("correct");
+    feedback.textContent = "Resposta correta.";
+  } else {
+    card.classList.add("incorrect");
+    labels[selected].classList.add("is-wrong-answer");
+    feedback.textContent = `Resposta incorreta. A alternativa correta é ${letters[item.a]}.`;
+  }
+
+  card.querySelectorAll("input").forEach((input) => { input.disabled = true; });
+  batchCorrectedIndexes.add(index);
+}
+
+function correctCompletedBatch() {
+  const pendingAnswered = questions
+    .map((_, index) => index)
+    .filter((index) => !batchCorrectedIndexes.has(index) && quizForm.querySelector(`input[name="q${index}"]:checked`));
+
+  if (pendingAnswered.length < 5) return false;
+
+  const batch = pendingAnswered.slice(0, 5);
+  batch.forEach(correctQuestion);
+
+  const lastCard = document.getElementById(`question-${batch[batch.length - 1] + 1}`);
+  notifyApp("Bloco de 5 questões corrigido. Continue o simulado.");
+  lastCard?.scrollIntoView({ behavior: "smooth", block: "center" });
+  return true;
+}
+
 quizForm.addEventListener("change", (event) => {
   if (corrected) return;
   const card = event.target.closest(".question-card");
   if (card) card.classList.remove("unanswered");
   updateProgress();
+  correctCompletedBatch();
 });
 
 quizForm.addEventListener("submit", (event) => {
@@ -117,21 +163,12 @@ quizForm.addEventListener("submit", (event) => {
   const wrong = [];
 
   questions.forEach((item, index) => {
-    const card = document.getElementById(`question-${index + 1}`);
     const selected = Number(quizForm.querySelector(`input[name="q${index}"]:checked`).value);
-    const labels = card.querySelectorAll(".option");
-    const feedback = card.querySelector(".feedback-line");
-    card.classList.remove("unanswered");
-    labels[item.a].classList.add("is-correct-answer");
+    correctQuestion(index);
 
     if (selected === item.a) {
       score++;
-      card.classList.add("correct");
-      feedback.textContent = "Resposta correta.";
     } else {
-      card.classList.add("incorrect");
-      labels[selected].classList.add("is-wrong-answer");
-      feedback.textContent = `Resposta incorreta. A alternativa correta é ${letters[item.a]}.`;
       wrong.push({ number: index + 1, selected, ...item });
     }
   });
@@ -189,6 +226,7 @@ document.getElementById("toast-close").addEventListener("click", hideToast);
 
 resetButton.addEventListener("click", () => {
   corrected = false;
+  batchCorrectedIndexes.clear();
   quizForm.reset();
   quizForm.querySelectorAll("input").forEach((input) => { input.disabled = false; });
   document.querySelectorAll(".question-card").forEach((card) => card.classList.remove("correct", "incorrect", "unanswered"));
@@ -2119,10 +2157,12 @@ function registerAudioChoice(choice, sessionId) {
   // criava um laço infinito ao aceitar respostas (voz ou toque).
   input.closest('.question-card')?.classList.remove('unanswered');
   updateProgress();
+  const batchWasCorrected = correctCompletedBatch();
   const letter = letters[choice];
   const optionText = questions[audioQuestionIndex].o[choice];
   setAudioStatus(`Resposta reconhecida: ${letter}.`);
-  speakText(`Você respondeu ${letter}. ${optionText}.`, () => {
+  const spokenFeedback = batchWasCorrected ? " O bloco de cinco questões foi corrigido. Continue o simulado." : "";
+  speakText(`Você respondeu ${letter}. ${optionText}.${spokenFeedback}`, () => {
     processingChoice = false;
     if (!quizAudioEnabled || sessionId !== audioSessionId) return;
     const isAnswered = i => !!quizForm.querySelector(`input[name="q${i}"]:checked`);
